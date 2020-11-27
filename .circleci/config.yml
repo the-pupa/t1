@@ -27,7 +27,6 @@ jobs:
            stty cols 80
            export DISPLAY=:99.0
            fluxbox >/dev/null 2>&1 &
-           cp -R ./qa/onto/* ./ontology 2>/dev/null || :
       - run:
           name: "Install"
           command: | 
@@ -48,6 +47,7 @@ jobs:
             sleep 200
             grunt test --stack --verbose
             testcafe chrome qa/testcafe/testLogin.js --screenshots screens --screenshots-on-fails screens --speed 0.8
+            cat ./logs/*.log
             testcafe chrome qa/testcafe/testPerson.js --screenshots screens --screenshots-on-fails screens --speed 0.1
             testcafe chrome qa/testcafe/testLanguage.js --screenshots screens --screenshots-on-fails screens --speed 0.8
             testcafe chrome qa/testcafe/testComment.js --screenshots screens --screenshots-on-fails screens --speed 0.5
