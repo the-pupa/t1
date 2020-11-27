@@ -1,0 +1,176 @@
+@prefix mnd-s: <http://semantic-machines.com/veda/mondi-schema/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix v-ui: <http://semantic-machines.com/veda/veda-ui/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix v-wf: <http://semantic-machines.com/veda/veda-workflow/> .
+
+<http://semantic-machines.com/veda/mondi-schema-Documentation/>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология системы Veda. Документация"@ru ;
+  rdfs:label "Veda system ontology. Documentation"@en ;
+  v-s:loadPriority 11 ;
+.
+#-- Классы --
+#---------------------------------------------------------
+
+#---------------------------------------------------------
+v-s:Risk
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:UserThing ;
+  rdfs:subClassOf v-s:Journaling ;
+  rdfs:subClassOf v-s:Embedded ;
+  rdfs:subClassOf v-s:Measurable ;
+  rdfs:label "Риск"@ru ;
+  rdfs:label "Risk"@en ;
+.
+v-s:consequence
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Последствия"@ru ;
+  rdfs:label "Implication"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Risk ;
+.
+v-s:possibleLossAmount
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Величина возможного ущерба"@ru ;
+  rdfs:label "Possible loss amount"@en ;
+  rdfs:range xsd:decimal;
+  rdfs:domain v-s:Risk ;
+.
+
+
+#---------------------------------------------------------
+v-s:Observation
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:UserThing ;
+  rdfs:subClassOf v-s:Journaling ;
+  rdfs:subClassOf v-s:Embedded ;
+  rdfs:subClassOf v-s:Measurable ;
+  rdfs:subClassOf v-s:AutomaticallyVersioned ;
+  rdfs:subClassOf v-s:Controlled ;
+  rdfs:subClassOf v-s:Registered ;
+  rdfs:label "Наблюдение"@ru ;
+  rdfs:label "Observation"@en ;
+.
+v-s:observationDescription
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Наблюдение"@ru ;
+  rdfs:label "Observation"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Observation ;
+.
+v-s:deviationDescription
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Отклонение"@ru ;
+  rdfs:label "Deviation"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Observation ;
+.
+v-s:recommendationDescription
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Рекомендация"@ru ;
+  rdfs:label "Recommendation"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Observation ;
+.
+v-s:isPositiveObservation
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Положительное наблюдение?"@ru ;
+  rdfs:label "Positive observation?"@en ;
+  rdfs:range xsd:boolean ;
+  rdfs:domain v-s:Observation ;
+.
+
+v-s:effectsDescription
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Описание последствий"@ru ;
+  rdfs:label "What are the consequences?"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Observation ;
+.
+v-s:observationInitiator
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Кто обнаружил"@ru ;
+  rdfs:label "Оbservation initiator"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Observation ;
+.
+v-s:observationCircumstances
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Как было обнаружено?"@ru ;
+  rdfs:label "How was it discovered?"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Observation ;
+.
+
+
+
+#---------------------------------------------------------
+v-s:WorkReport
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:UserThing ;
+  rdfs:subClassOf v-s:Journaling ;
+  rdfs:subClassOf v-s:Embedded ;
+  rdfs:subClassOf v-s:Measurable ;
+  rdfs:subClassOf v-s:AutomaticallyVersioned ;
+  rdfs:subClassOf v-s:Controlled ;
+  rdfs:label "Отчет о работе"@ru ;
+  rdfs:label "Work Report"@en ;
+.
+# ------------------------------------------------------------
+v-s:Request
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:UserThing ;
+  rdfs:subClassOf v-s:Journaling ;
+#  rdfs:subClassOf v-s:Embedded ;
+#  rdfs:subClassOf v-s:AutomaticallyVersioned ;
+  rdfs:subClassOf v-s:Measurable ;
+  rdfs:subClassOf v-s:Registered ;
+  rdfs:subClassOf v-s:Spatial ;
+  rdfs:subClassOf v-s:Temporal ;
+  rdfs:subClassOf v-s:Controlled ;
+  rdfs:subClassOf v-s:Document;
+  rdfs:label "Заявка"@ru ;
+  rdfs:label "Request"@en ;
+.
+
+#-----Регистрационный номер
+#v-s:registrationNumber
+
+#-----Статус
+#v-s:hasStatus
+
+#-----Дата
+#v-s:date 
+
+#-----Тема
+#v-s:theme
+
+#-----Мероприятие
+#v-s:hasAction
+v-s:PS_hasAction_Request
+  rdf:type v-ui:ObjectPropertySpecification ;
+  v-ui:forClass v-s:Request ;
+  v-ui:forProperty v-s:hasAction ;
+  v-ui:minCardinality 0 ;
+  v-ui:maxCardinality 100 ;
+  #v-ui:queryPrefix "('rdf:type'==='v-s:Action')" ;
+  rdfs:label "Спецификация свойства v-s:hasAction для класса v-s:Request"@ru ;
+  rdfs:label "v-s:hasAction property specification for v-s:Request classes"@en ;
+.
+
+
+#---------------------------------------------------------
+v-s:MaintainedObject
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:UserThing ;
+  rdfs:subClassOf v-s:Embedded ;
+  rdfs:subClassOf v-s:BackwardLink ;
+  rdfs:subClassOf v-s:ClassifiedRus ;
+  rdfs:label "Обслуживаемый объект"@ru ;
+  rdfs:label "Maintained Object"@en ;
+.
+

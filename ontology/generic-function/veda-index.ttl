@@ -1,0 +1,148 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix v-wf: <http://semantic-machines.com/veda/veda-workflow/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix vdi: <http://semantic-machines.com/veda/veda-index/> .
+<http://semantic-machines.com/veda/veda-index>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология индексирования данных системы Веда"@ru ;
+  rdfs:label "Veda system data index ontology"@en ;
+  owl:versionInfo "3.7" ;
+  v-s:loadPriority 1 ;
+.
+vdi:ClassIndex
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Индекс класса"@ru ;
+  rdfs:label "Class index"@en ;
+.
+vdi:forClass
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain vdi:ClassIndex ;
+  rdfs:label "Для класса"@ru ;
+  rdfs:label "For class"@en ;
+  rdfs:range owl:Class ;
+.
+vdi:forProperty
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain vdi:ClassIndex ;
+  rdfs:label "Для свойства"@ru ;
+  rdfs:label "For property"@en ;
+  rdfs:range owl:Class ;
+.
+vdi:inherited_index
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain vdi:ClassIndex ;
+  rdfs:label "Наследуемый индекс"@ru ;
+  rdfs:label "Inherited index"@en ;
+  rdfs:range rdfs:Resource ;
+.
+vdi:domain
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain vdi:ClassIndex ;
+  rdfs:label "домен индекса"@ru ;
+  rdfs:label "index domain"@en ;
+  rdfs:range rdfs:Resource ;
+.
+vdi:indexed_field
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain vdi:ClassIndex ;
+  rdfs:label "Индексируемое поле"@ru ;
+  rdfs:label "Indexed field"@en ;
+  rdfs:range rdfs:Resource ;
+.
+vdi:indexed_field_as_fwildcard
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain vdi:ClassIndex ;
+  rdfs:label "Для поиска вида [*xxx]"@ru ;
+  rdfs:range rdfs:Resource ;
+.
+vdi:indexed_to
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain vdi:ClassIndex ;
+  rdfs:label "Индексировать в"@ru ;
+  rdfs:label "Indexed to"@en ;
+  rdfs:range xsd:string ;
+.
+
+#---------------------------------------------
+
+#vdi:index_00
+#  rdf:type vdi:ClassIndex ;
+#  vdi:forClass v-s:Membership ;
+#  vdi:forClass v-s:PermissionStatement ;
+#  rdfs:label "az indexed" ;
+#  vdi:indexed_to "az" ;
+#.
+
+vdi:index_01
+  rdf:type vdi:ClassIndex ;
+  vdi:forClass v-s:File ;
+  vdi:forClass v-wf:Process ;
+  vdi:forClass v-wf:DecisionForm ;
+  rdfs:label "system indexed" ;
+  vdi:indexed_to "system" ;
+.
+
+vdi:index_02
+  rdf:type vdi:ClassIndex ;
+  vdi:forClass v-s:Journal ;
+  vdi:forClass v-s:JournalRecord ;
+  vdi:forClass v-wf:WorkOrder ;
+  vdi:forClass v-wf:WorkItem ;
+  vdi:forClass v-wf:Variable ;
+  vdi:forClass v-s:Membership ;
+  vdi:forClass v-s:PermissionStatement ;
+  rdfs:label "not indexed" ;
+  vdi:indexed_to "not-indexed" ;
+.
+
+#---------------------------------------------
+
+vdi:index_creator
+  rdf:type vdi:ClassIndex ;
+  vdi:forProperty v-s:creator ;
+  vdi:inherited_index vdi:index_person_position ;
+.
+vdi:index_person_position
+  rdf:type vdi:ClassIndex ;
+  vdi:forClass v-s:Appointment ;
+  vdi:indexed_field v-s:employee ;
+  vdi:indexed_field v-s:occupation ;
+  vdi:indexed_field v-s:parentUnit ;
+  vdi:indexed_field v-s:parentOrganization ;
+.
+
+# ---------------------------
+
+vdi:index_appointment_employee
+  rdf:type vdi:ClassIndex ;
+  vdi:forClass v-s:Appointment ;
+  vdi:forProperty v-s:employee ;
+  vdi:inherited_index vdi:index_person ;
+.
+vdi:index_person
+  rdf:type vdi:ClassIndex ;
+  vdi:forClass v-s:Person ;
+  vdi:indexed_field v-s:firstName ;
+  vdi:indexed_field v-s:lastName ;
+  vdi:indexed_field v-s:middleName ;
+  vdi:indexed_field v-s:tabNumber ;
+  vdi:indexed_field v-s:hasAccount ;
+.
+
+# ----------------------------------
+
+vdi:index_type
+  rdf:type vdi:ClassIndex ;
+  vdi:forProperty rdf:type ;
+  vdi:inherited_index vdi:index_class_name ;
+.
+vdi:index_class_name
+  rdf:type vdi:ClassIndex ;
+  vdi:forClass rdfs:Resource ;
+  vdi:indexed_field rdfs:label ;
+.

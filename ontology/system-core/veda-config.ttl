@@ -1,0 +1,157 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+
+@prefix vsrv: <http://semantic-machines.com/veda/veda-server/> .
+<http://semantic-machines.com/veda/veda-server>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология настроек сервера системы Веда"@ru ;
+  rdfs:label "Veda server properties ontology"@en ;
+#  owl:versionInfo "1.0" ;
+  v-s:loadPriority 2 ;
+.
+
+v-s:loadPriority
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain owl:Ontology ;
+  rdfs:label "Приоритет загрузки онтологии"@ru ;
+  rdfs:label "Ontology load priority"@en ;
+  rdfs:comment "Приоритет загрузки используется сервером при чтении ttl-файлов для определения порядка загрузки онтологий в базу данных"@ru ;
+  rdfs:comment "Load proprity is used by server when reading ttl files to determine ontology load sequence to DB"@en ;
+  rdfs:range xsd:integer ;
+.
+
+v-s:Node
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Нода"@ru ;
+  rdfs:label "Node"@en ;
+.
+
+v-s:count_thread
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Node ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Количество процессов для паралельной обработки"@ru ;
+  rdfs:label "Count thread"@en ;
+  rdfs:range xsd:integer ;
+.
+
+v-s:push_individual_by_event
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Node ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Push individual by event" ;
+  rdfs:range v-s:Connection ;
+.
+
+v-s:send_an_email_individual_by_event
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Node ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Send an e-mail individual by event" ;
+  rdfs:range v-s:Connection ;
+.
+
+v-s:checktime_onto_files
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Node ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Период между проверками изменений в файлах онтологии, секунд"@ru ;
+  rdfs:label "Checktime for onto files, sec."@en ;
+  rdfs:range xsd:integer ;
+.
+
+v-s:listener
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Node ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Слушатель канала"@ru ;
+  rdfs:label "Listener channel"@en ;
+  rdfs:range v-s:Connection ;
+.
+
+v-s:jsvm_node
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Node ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Адрес ноды JavaScript VM" ;
+  rdfs:range v-s:Connection ;
+.
+
+v-s:fts_node
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Node ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Адрес ноды Full Text Search" ;
+  rdfs:range v-s:Connection ;
+.
+
+v-s:write_storage_node
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Node ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Адрес write ноды" ;
+  rdfs:range v-s:Connection ;
+.
+
+v-s:Connection
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Соединение"@ru ;
+  rdfs:label "Connection"@en ;
+.
+
+v-s:transport
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Connection ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Слушатель канала"@ru ;
+  rdfs:label "Listener channel"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:point
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Connection ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Точка подключения"@ru ;
+  rdfs:label "Connection point"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:host
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Connection ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Host";
+  rdfs:range xsd:string ;
+.
+
+v-s:port
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Connection ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Port";
+  rdfs:range xsd:integer ;
+.
+
+v-s:sql_database
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Connection ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Database name" ;
+  rdfs:range xsd:string ;
+.
+
+v-s:queue
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Connection ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Queue" ;
+  rdfs:range xsd:string ;
+.

@@ -1,0 +1,19 @@
+[package]
+name = "libauthorization"
+version = "0.1.0"
+authors = ["itiu <ValeriyBushenev@gmail.com>"]
+#build = "build.rs"
+edition = "2018"
+
+[lib]
+name = "authorization"
+path = "src/lib.rs"
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+v_az_lmdb = { path = "../v-az-lmdb" }
+v_authorization = { path = "../v-authorization" }
+
+#[build-dependencies]
+#cbindgen = "0.1"
+

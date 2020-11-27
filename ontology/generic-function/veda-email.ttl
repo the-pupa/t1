@@ -1,0 +1,223 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix v-ui: <http://semantic-machines.com/veda/veda-ui/> .
+@prefix vdi: <http://semantic-machines.com/veda/veda-index/> .
+@prefix v-fs: <http://semantic-machines.com/veda/veda-function-search/> .
+@prefix v-fc: <http://semantic-machines.com/veda/veda-function-create/> .
+
+<http://semantic-machines.com/veda/veda-email>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология системы Veda. Электронное письмо"@ru ;
+  rdfs:label "Veda system ontology. E-mail"@en ;
+#  owl:versionInfo "1.3" ;
+  v-s:loadPriority 6 ;
+.
+
+v-s:Email
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Deliverable ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Электронное письмо"@ru ;
+  rdfs:label "E-mail"@en ;
+.
+
+v-s:Deliverable
+  rdf:type owl:Class ;
+  rdfs:subClassOf rdfs:Resource ;
+  rdfs:label "Сущность подлежащая доставке"@ru ;
+  rdfs:label "Deliverable thing"@en ;
+.
+v-s:infoOfExecuting
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Deliverable ;
+  rdfs:label "Информация о выполнении" ;
+  rdfs:range xsd:string ;
+.
+v-s:isSuccess
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Deliverable ;
+  rdfs:label "Завершено успешно" ;
+  rdfs:range xsd:boolean ;
+.
+v-s:subject
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Тема письма"@ru ;
+  rdfs:label "Subject"@en ;
+  rdfs:domain v-s:Deliverable ;
+  rdfs:range xsd:string ;
+.
+v-s:messageBody
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Содержание письма"@ru ;
+  rdfs:label "Message body"@en ;
+  rdfs:domain v-s:Deliverable ;
+  rdfs:range xsd:string ;
+.
+v-s:senderMailbox
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Электронный адрес отправителя"@ru ;
+  rdfs:label "Sender Mailbox"@en ;
+  rdfs:domain v-s:Deliverable ;
+  rdfs:range xsd:string ;
+.
+v-s:recipientMailbox
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Электронный адрес получателя"@ru ;
+  rdfs:label "Recipient Mailbox"@en ;
+  rdfs:domain v-s:Deliverable ;
+  rdfs:range xsd:string ;
+.
+
+v-s:attachmentEmailBundle
+  rdf:type v-s:Bundle ;
+  rdfs:comment "Суммарный размер вложений не должен превышать 15 Мб"@ru ;
+  rdfs:comment "The total size of investments should not exceed 15 Mb"@en ;
+.
+### ------------------------------------------------------
+v-s:TS_Email 
+  rdf:type v-ui:TemplateSpecification;
+  v-s:loadPriority "15"^^xsd:integer;
+  v-ui:defaultTemplate v-s:EmailTemplate;
+  v-ui:forClass v-s:Email
+.
+    
+v-s:EmailTemplate
+  rdf:type v-ui:ClassTemplate ;
+  v-ui:forClass v-s:Email ;
+  rdfs:label "Шаблон отправки email"@ru ;
+  rdfs:label "Email send template"@en ;
+  v-ui:template """
+<script>
+  template.on("validate", function () {
+    var result = {};
+    var promises = individual["v-s:attachment"].map(function(attach) {
+      return attach.getPropertyChain("v-s:fileSize");
+    });
+    return Promise.all(promises).then(function(fileSizeArr) {
+      var fileSizeSUM = 0;
+      fileSizeArr.forEach(function(fileSize) {
+        fileSizeSUM += +fileSize;
+      });
+      console.log(fileSizeSUM > 15728640); //15 мб
+      if (fileSizeSUM > 15728640) 
+        result["v-s:attachment"] = {
+          state: false,
+          cause: ["v-s:attachmentEmailBundle"]
+        };
+      template.trigger("validated", result);
+    });
+  })
+
+//# sourceURL=v-s:EmailTemplate_pre
+</script>
+<div class="container sheet">
+  <h2>
+    <span about="v-s:Email" property="rdfs:label"></span><br>
+    <small about="@" property="rdfs:label"></small>
+  </h2>
+  <hr class="view edit -search">
+  <div class="row">
+    <div class="col-sm-6">
+      <em about="v-wf:from" property="rdfs:label" ></em>
+      <div about="@" property="v-wf:from" class="-view edit -search"></div>
+      <div property="v-wf:from" class="view -edit search"></div>
+      <veda-control data-type="string" property="v-wf:from" class="-view -edit search"></veda-control>
+      <em about="v-wf:to" property="rdfs:label" ></em>
+      <div about="@" property="v-wf:to" class="-view edit -search"></div>
+      <div property="v-wf:to" class="view -edit search"></div>
+      <veda-control data-type="string" property="v-wf:to" class="-view -edit search"></veda-control>
+      <em about="v-s:senderMailbox" property="rdfs:label" ></em>
+      <div about="@" property="v-s:senderMailbox" class="-view edit -search"></div>
+      <div property="v-s:senderMailbox" class="view -edit search"></div>
+      <veda-control data-type="string" property="v-s:senderMailbox" class="-view -edit search"></veda-control>
+      <em about="v-s:recipientMailbox" property="rdfs:label"></em>
+      <div property="v-s:recipientMailbox" class="view edit -search"></div>
+      <veda-control data-type="generic" property="v-s:recipientMailbox" class="-view edit search"></veda-control>
+      <em about="v-s:subject" property="rdfs:label"></em>
+      <div property="v-s:subject" class="view -edit -search"></div>
+      <veda-control data-type="string" property="v-s:subject" class="-view edit search"></veda-control>
+      <em about="v-s:messageBody" property="rdfs:label"></em>
+      <div property="v-s:messageBody" class="view -edit -search"></div>
+      <veda-control property="v-s:messageBody" data-type="text" rows="4" class="-view edit search"></veda-control>
+      <em about="v-s:attachment" property="rdfs:label"></em>
+      <div rel="v-s:attachment" data-template="v-ui:FileTemplateWithComment" data-embedded="true"></div>
+      <veda-control data-type="file" rel="v-s:attachment" class="-view edit -search create"></veda-control>
+      <br>
+    </div>
+  </div>
+  <hr>
+  <div about="@" data-template="v-ui:SystemPropertiesTemplate" data-embedded="true"></div>
+  <br>
+  <div class="actions">
+    <span about="@" data-template="v-ui:StandardButtonsTemplate" data-embedded="true" data-buttons="save edit cancel delete"></span>
+  </div>
+</div>
+  """ ;
+.
+v-s:Notification
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Уведомление"@ru ;
+  rdfs:label "Notification"@en ;
+.
+v-s:notificationBody
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Тело шаблона" ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Notification ;
+.
+v-s:notificationSubject
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Тема шаблона" ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Notification ;
+.
+v-s:notificationLanguage
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Язык используемый в шаблоне"@ru ;
+  rdfs:label "Template language"@en ;
+  rdfs:range v-ui:Language ;
+  rdfs:domain v-s:Notification ;
+.
+v-s:hasMessageType
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Тип сообщения"@ru ;
+  rdfs:label "Notification type"@en ;
+  rdfs:range v-s:MessageType ;
+  rdfs:domain v-s:Notification ;
+  rdfs:domain v-s:Email ;
+.
+v-s:MessageType
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Тип уведомления"@ru ;
+  rdfs:label "Notification type"@en ;
+.
+v-s:ProcessStartNotification
+  rdf:type v-s:MessageType ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Уведомление о начале процесса"@ru ;
+  rdfs:label "Process start notification"@en ;
+.
+v-s:ProcessFinishNotification
+  rdf:type v-s:MessageType ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Уведомление о завершении процесса"@ru ;
+  rdfs:label "Process finish notification"@en ;
+.
+v-s:TaskReceivedNotification
+  rdf:type v-s:MessageType ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Уведомление о получении задачи"@ru ;
+  rdfs:label "Task received notification"@en ;
+.
+v-s:OtherNotification
+  rdf:type v-s:MessageType ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Прочие уведомления"@ru ;
+  rdfs:label "Other notifications"@en ;
+  v-s:deleted true ;
+.

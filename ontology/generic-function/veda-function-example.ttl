@@ -1,0 +1,75 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix v-ui: <http://semantic-machines.com/veda/veda-ui/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix v-fe: <http://semantic-machines.com/veda/veda-function-example/> .
+<http://semantic-machines.com/veda/veda-function-example>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология функции-примера системы Веда"@ru ;
+  rdfs:label "Veda system example function ontology"@en ;
+  owl:versionInfo "3.9" ;
+  v-s:loadPriority 9 ;
+.
+v-fe:FunctionExample
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Function ;
+  rdfs:label "Функция-пример"@ru ;
+  rdfs:label "Example function"@en ;
+  v-ui:hasModel v-fe:FunctionExampleModel ;
+.
+v-fe:FunctionExample1
+  rdf:type v-fe:FunctionExample ;
+  rdfs:label "Экземпляр Функции-примера"@ru ;
+  rdfs:label "Instance of Example function"@en ;
+  v-fe:exampleProperty "example value 1"^^xsd:string ;
+  v-fe:exampleProperty "example value 2"^^xsd:string ;
+.
+v-fe:exampleProperty
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Свойство-пример"@ru ;
+  rdfs:label "Example property"@en ;
+  rdfs:domain v-fe:FunctionExample ;
+  rdfs:range xsd:string ;
+.
+v-fe:FunctionExampleModel
+  rdf:type v-ui:ClassModel ;
+  rdfs:label "Модель Функции-примера"@ru ;
+  rdfs:label "Example function model"@en ;
+  v-ui:forClass v-fe:FunctionExample ;
+  v-s:script """
+  var self = this;
+    self.press = function () {
+      alert("model extention works! self['v-fe:exampleProperty']:" + self["v-fe:exampleProperty"].join(", "));
+    }
+  //# sourceURL=v-fe:FunctionExampleModel
+  """
+.
+v-s:TS_FunctionExample 
+  rdf:type v-ui:TemplateSpecification;
+  v-s:loadPriority "15"^^xsd:integer;
+  v-ui:defaultTemplate v-fe:FunctionExampleTemplate;
+  v-ui:forClass v-fe:FunctionExample
+.
+v-fe:FunctionExampleTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон Функции-примера"@ru ;
+  rdfs:label "Function example template"@en ;
+  v-ui:forClass v-fe:FunctionExample ;
+  v-ui:template """
+    <div class="container sheet">
+      <h2>Example function instance</h2>
+      <span about="v-fe:exampleProperty" property="rdfs:label"></span>
+      <div property="v-fe:exampleProperty"></div>
+      <button id="press-me" class="btn btn-success">Press me</button>
+    </div>
+    <script>
+      $("#press-me", template).click(function () {
+        individual.press();
+      });
+      //# sourceURL=v-fe:FunctionExampleTemplate
+    </script>
+  """
+.

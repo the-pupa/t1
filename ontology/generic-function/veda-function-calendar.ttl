@@ -1,0 +1,221 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix v-ui: <http://semantic-machines.com/veda/veda-ui/> .
+@prefix v-fs: <http://semantic-machines.com/veda/veda-function-search/> .
+@prefix cfg: <http://semantic-machines.com/veda/config/> .
+@prefix v-fc: <http://semantic-machines.com/veda/veda-function-create/> .
+
+@prefix v-cal: <http://semantic-machines.com/veda/veda-function-calendar/> .
+<http://semantic-machines.com/veda/veda-function-calendar>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология функции 'Календарь' системы Веда"@ru ;
+  rdfs:label "Veda system function 'Calendar' ontology"@en ;
+#  owl:versionInfo "0.1" ;
+  v-s:loadPriority 9 ;
+.
+
+########## CALENDAR FUNCTION ###########
+
+v-cal:FunctionCalendar
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Function ;
+  rdfs:label "Функция 'Задачи'"@ru ;
+  rdfs:label "Function 'Tasks'"@en ;
+  v-ui:hasModel v-cal:FunctionCalendarModel ;
+.
+v-cal:query
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-cal:FunctionCalendar ;
+  rdfs:range xsd:string ;
+.
+v-cal:sortOrder
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-cal:FunctionCalendar ;
+  rdfs:range xsd:string ;
+.
+v-cal:FunctionCalendarModel
+  rdf:type v-ui:ClassModel ;
+  rdfs:label "Шаблон для класса v-cal:FunctionCalendar"@ru ;
+  rdfs:label "v-cal:FunctionCalendar class template"@en ;
+  v-ui:forClass v-cal:FunctionCalendar ;
+  v-s:script """
+
+this.getEvents = function (start, end) {
+  if (typeof start === "undefined") {
+    start = end = new Date();
+  }
+  var q = format (
+    this["v-cal:query"][0],
+    start.toJSON(),
+    end.toJSON(),
+    veda.user.id
+  );
+  var sort = this["v-cal:sortOrder"][0];
+  return veda.Backend.query({
+    ticket: veda.ticket,
+    query: q,
+    sort: sort
+  })
+  .then(function (queryResult) {
+    var uris = queryResult.result;
+    var eventsPromises = uris.map(function (uri) {
+      return new veda.IndividualModel(uri).load()
+        .then(function (event) {
+          var label;
+          try {
+            label = event["rdfs:label"].map(veda.Util.formatValue).join(" ") + ": " + event["v-wf:onDocument"][0]["rdfs:label"].map(veda.Util.formatValue).join(" ");
+          } catch (e) {
+            event["rdfs:label"].map(veda.Util.formatValue).join(" ");
+          }
+          var className;
+          var today = new Date(); today.setHours(0); today.setMinutes(0); today.setSeconds(0); today.setMilliseconds(0);
+          var tomorrow = new Date(); tomorrow.setHours(23); tomorrow.setMinutes(59); tomorrow.setSeconds(59); tomorrow.setMilliseconds(999);
+          var dueDate = event["v-wf:dateGiven"][0];
+          var now = new Date();
+          switch (true) {
+            case (dueDate < today) :
+              className = "fc-danger";
+            break;
+            case (today < dueDate && dueDate < tomorrow) :
+              className = "fc-warning";
+            break;
+            case (tomorrow < dueDate) :
+              className = "fc-success";
+            break;
+          }
+          return {
+            "id": event.id,
+            "title": label,
+            "url": "#/" + event.id,
+            "className": className,
+            "start": dueDate ? dueDate.valueOf() : now.valueOf(),
+            "end": dueDate ? dueDate.valueOf() + 60 * 60 * 1000 : now.valueOf() + 60 * 60 * 1000
+          }
+        });
+    });
+    return Promise.all(eventsPromises);
+  });
+}
+
+function format(str) {
+  var args = arguments;
+  return str.replace(/{([0-9]+)}/gi, function (match, position) {
+    return typeof args[position] !== "undefined" ? args[position] : match ;
+  });
+}
+
+//# sourceURL=v-cal:FunctionCalendarModel
+  """
+.
+v-cal:TasksCalendar
+  rdf:type v-cal:FunctionCalendar ;
+  rdfs:label "Календарь задач"@ru ;
+  rdfs:label "Tasks calendar"@en ;
+  v-cal:query "'rdf:type' == 'v-wf:DecisionForm' && 'v-wf:isCompleted' == false && 'v-wf:dateGiven' == [{1},{2}] && 'v-wf:to' == '{3}'"^^xsd:string ;
+  v-cal:sortOrder "'v-wf:dateGiven' desc"^^xsd:string ;
+.
+
+v-s:TS_FunctionCalendar
+  rdf:type v-ui:TemplateSpecification;
+  v-s:loadPriority "15"^^xsd:integer;
+  v-ui:defaultTemplate v-cal:FunctionCalendarTemplate;
+  v-ui:forClass v-cal:FunctionCalendar
+.
+v-cal:FunctionCalendarTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон для класса v-cal:FunctionCalendar"@ru ;
+  rdfs:label "v-cal:FunctionCalendar class template"@en ;
+  v-ui:forClass v-cal:FunctionCalendar ;
+  v-ui:template """
+<div class="container-fluid sheet">
+  <br>
+  <div id="fullcalendar"></div>
+</div>
+<script>
+  /*var counter_uri = "d:taskCounter_" + veda.user.id.split(":").join("_");
+  var counter = new veda.IndividualModel(counter_uri);*/
+  var fullCalendarOptions = {
+    eventSources: [
+      {
+        events: function(start, end, timezone, callback) {
+          individual.getEvents(start, end).then(function (events) {
+            // Update counter if counter & events count do not match
+            /*var counter_uri = "d:taskCounter_" + veda.user.id.split(":").join("_");
+            var counter = new veda.IndividualModel(counter_uri);
+            counter.load().then(function (counter) {
+              if ( counter.isNew() ) {
+                counter["rdf:type"] = [ new veda.IndividualModel("v-ft:TaskCounter") ];
+              }
+              if ( !counter.hasValue("v-ft:inboxWeekCount", events.length) && start.toDate() <= new Date() && new Date() <= end.toDate() ) {
+                counter["v-ft:inboxWeekCount"] = [events.length];
+                counter.save();
+              }
+            });*/
+            callback(events);
+          });
+        }
+      }
+    ],
+    header: {
+      left:   'today',
+      center: 'prev title next',
+      right:  'month,agendaWeek,agendaDay,listWeek'
+    },
+    navLinks: true,
+    firstDay: 1,
+    defaultView: 'agendaWeek',
+    weekNumbers: true,
+    weekNumberCalculation: "ISO",
+    businessHours: {
+      dow: [ 1, 2, 3, 4, 5 ],
+      start: '8:00',
+      end: '18:00'
+    },
+    locale: Object.keys(veda.user.preferences.language)[0].toLowerCase(),
+    timezone: 'local',
+    height: function () {
+      var top = $('#fullcalendar', template).offset().top;
+      var bottom = container.next().offset().top;
+      return (bottom - top - 30);
+    }
+  };
+
+  setTimeout(function () {
+    var fullCalendar = $('#fullcalendar', template);
+    fullCalendar.fullCalendar(fullCalendarOptions);
+
+    template.one("remove", function () {
+      fullCalendar.fullCalendar("destroy");
+    });
+  }, 0);
+
+  //# sourceURL=v-cal:FunctionCalendarTemplate_post
+</script>
+  """ ;
+.
+
+v-cal:FunctionCalendarIndicatorTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон индикатора для v-cal:FunctionCalendar"@ru ;
+  rdfs:label "v-cal:FunctionCalendar indicator template"@en ;
+  v-ui:template """
+<script>
+  /*var counter_uri = "d:taskCounter_" + veda.user.id.split(":").join("_");
+  $(".label", template).attr("about", counter_uri);*/
+  template.tooltip({
+    container: template,
+    placement: "bottom",
+    trigger: "hover",
+    title: individual["rdfs:label"].map(veda.Util.formatValue).join(" ")
+  });
+  //# sourceURL=v-cal:FunctionCalendarIndicatorTemplate_pre
+</script>
+<a href="#/@" data-toggle="tooltip" data-trigger="hover" data-placement="bottom">
+  <span class="fa fa-calendar fa-lg"></span>
+  <!--span id="counter" class="label label-danger" property="v-ft:inboxWeekCount"></span-->
+</a>
+  """ ;
+.

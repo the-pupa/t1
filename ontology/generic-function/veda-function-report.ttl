@@ -1,0 +1,263 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix v-ui: <http://semantic-machines.com/veda/veda-ui/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix cfg: <http://semantic-machines.com/veda/config/> .
+@prefix v-fc: <http://semantic-machines.com/veda/veda-function-create/> .
+
+<http://semantic-machines.com/veda/veda-function-report>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология функции 'Отчет' системы Веда"@ru ;
+  rdfs:label "Veda system function 'Report' ontology"@en ;
+#  owl:versionInfo "0.2" ;
+  v-s:loadPriority 9 ;
+.
+
+v-s:Report
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Отчет"@ru ;
+  rdfs:label "Report"@en ;
+.
+v-s:PersonalReport
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Report ;
+  rdfs:label "Отчет"@ru ;
+  rdfs:label "Report"@en ;
+.
+v-s:ReportsForClass
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Список отчетов"@ru ;
+  rdfs:label "Reports list"@en ;
+.
+
+v-s:reportPath
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Report ;
+  rdfs:domain v-s:ReportsForClass ;
+  rdfs:label "Путь файла"@ru ;
+  rdfs:label "File path"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:reportFormat
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Формат файла"@ru ;
+  rdfs:label "File format"@en ;
+  rdfs:domain v-s:Report ;
+  rdfs:domain v-s:ReportsForClass ;
+  rdfs:range xsd:string ;
+.
+
+v-s:reportBlank
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Бланк отчета"@ru ;
+  rdfs:label "Report blank"@en ;
+  rdfs:domain v-s:ReportsForClass ;
+  rdfs:domain v-s:Report ;
+  rdfs:range v-fc:Blank ;
+.
+
+v-s:EnterLabel
+  rdf:type v-s:Bundle ;
+  rdfs:label "Введите название"@ru ;
+  rdfs:label "Enter label"@en ;
+.
+
+v-s:SavePersonalReport
+  rdf:type v-s:Bundle ;
+  rdfs:label "Сохранить личный отчет"@ru ;
+  rdfs:label "Save personal report"@en ;
+.
+
+v-s:UpdatePersonalReport
+  rdf:type v-s:Bundle ;
+  rdfs:label "Обновить личный отчет"@ru ;
+  rdfs:label "Update personal report"@en ;
+.
+
+v-s:ReportSuccessfullySaved
+  rdf:type v-s:Bundle ;
+  rdfs:label "Отчет успешно сохранен"@ru ;
+  rdfs:label "Report successfully saved"@en ;
+.
+
+v-s:ReportSuccessfullyUpdated
+  rdf:type v-s:Bundle ;
+  rdfs:label "Отчет успешно обновлен"@ru ;
+  rdfs:label "Report successfully updated"@en ;
+.
+
+v-s:ReportSuccessfullyDeleted
+  rdf:type v-s:Bundle ;
+  rdfs:label "Отчет успешно удален"@ru ;
+  rdfs:label "Report successfully deleted"@en ;
+.
+
+v-s:TS_Report 
+  rdf:type v-ui:TemplateSpecification;
+  v-s:loadPriority "15"^^xsd:integer;
+  v-ui:defaultTemplate v-s:ReportManagementTemplate;
+  v-ui:forClass v-s:Report
+.
+v-s:TS_PersonalReport 
+  rdf:type v-ui:TemplateSpecification;
+  v-s:loadPriority "15"^^xsd:integer;
+  v-ui:defaultTemplate v-s:ReportManagementTemplate;
+  v-ui:forClass v-s:PersonalReport
+.
+
+v-s:ReportManagementTemplate
+  rdf:type v-ui:ClassTemplate ;
+  v-ui:forClass v-s:Report ;
+  rdfs:label "Шаблон управления индивидами для класса v-s:Report"@ru ;
+  rdfs:label "v-s:Report class individuals management template"@en ;
+  v-ui:template """
+<script>
+  var notify = new veda.Notify();
+
+  if ( !individual.hasValue("v-s:creator", veda.appointment || veda.user) ) {
+    $(".action.save-report", template).click(function () {
+      var enterLabel = new veda.IndividualModel("v-s:EnterLabel");
+      enterLabel.load().then(function (enterLabel) {
+        var personalLabel = prompt( enterLabel.toString(), individual.toString() );
+        if (!personalLabel) { return; }
+        individual.clone()
+        .then(function (personalReport) {
+          personalReport["rdf:type"] = [ new veda.IndividualModel("v-s:PersonalReport") ];
+          personalReport["v-s:creator"] = [];
+          personalReport["v-s:created"] = [];
+          personalReport["rdfs:isDefinedBy"] = [];
+          personalReport["rdfs:label"] = [ personalLabel ];
+          var reportBlank = individual.hasValue("v-s:reportBlank") ? individual["v-s:reportBlank"][0] : undefined;
+          if (reportBlank && reportBlank.object) {
+            return reportBlank.clone()
+            .then(function (personalReportBlank) {
+              personalReportBlank.object = reportBlank.object;
+              return personalReportBlank.updateBlank();
+            })
+            .then(function (personalReportBlank) {
+              personalReport["v-s:reportBlank"] = [ personalReportBlank ];
+              return personalReport.save();
+            });
+          } else {
+            return personalReport.save();
+          }
+        })
+        .then(function (personalReport) {
+          veda.user.aspect.load()
+          .then(function (aspect) {
+            aspect.addValue("v-s:hasReport", personalReport);
+            return aspect.save();
+          });
+        })
+        .then(function () {
+          return new veda.IndividualModel("v-s:ReportSuccessfullySaved").load();
+        })
+        .then(function (message) {
+          notify("success", { message: message });
+        })
+        .catch(function (error) {
+          notify("danger", { message: error });
+        });
+      });
+    });
+  } else {
+    $(".action.save-report", template).remove();
+  }
+
+  individual.rights.then(function (rights) {
+    if ( rights.hasValue("v-s:canUpdate", true) ) {
+      $(".action.update-report", template).click(function () {
+        var reportBlank = individual.hasValue("v-s:reportBlank") ? individual["v-s:reportBlank"][0] : undefined;
+        if (reportBlank && reportBlank.object) {
+          reportBlank.updateBlank()
+          .then(function () {
+            return new veda.IndividualModel("v-s:ReportSuccessfullyUpdated").load();
+          })
+          .then(function (message) {
+            notify("success", { message: message});
+          })
+          .catch(function (error) {
+            notify("danger", { message: error });
+          });
+        }
+      });
+    } else {
+      $(".action.update-report", template).remove();
+    }
+
+    if ( rights.hasValue("v-s:canDelete", true) ) {
+      $(".action.delete-report", template).click(function () {
+        veda.user.aspect.load()
+        .then(function (aspect) {
+          aspect.removeValue("v-s:hasReport", individual);
+          return aspect.save();
+        })
+        .then(function () {
+          return individual.delete();
+        })
+        .then(function () {
+          return new veda.IndividualModel("v-s:ReportSuccessfullyDeleted").load();
+        })
+        .then(function (message) {
+          return notify("success", { message: message });
+        })
+        .catch(function (error) {
+          notify("danger", { message: error });
+        });
+      });
+    } else {
+      $(".action.delete-report", template).remove();
+    }
+  });
+
+//# sourceURL=v-s:ReportManagementTemplate_pre
+</script>
+<div>
+  <div class="container sheet">
+    <div class="ribbon-wrapper top-left">
+      <div class="ribbon top-left warning" about="v-s:Report" property="rdfs:label"></div>
+    </div>
+    <div class="actions text-right">
+      <button class="action save-report btn btn-warning" about="v-s:SavePersonalReport" property="rdfs:label"></button>
+      <button class="action update-report btn btn-warning" about="v-s:UpdatePersonalReport" property="rdfs:label"></button>
+      <button class="action delete-report btn btn-link" about="v-s:Delete" property="rdfs:label"></button>
+    </div>
+  </div>
+  <div class="margin-lg" about="@" data-template="v-s:ReportTemplate">
+</div>
+  """ ;
+.
+
+v-s:ReportTemplate
+  rdf:type v-ui:ClassTemplate ;
+  v-ui:forClass v-s:Report;
+  rdfs:label "Шаблон для класса v-s:Report"@ru ;
+  rdfs:label "v-s:Report class template"@en ;
+  v-ui:template """
+<div class="container sheet">
+  <div about="@" rel="v-s:reportBlank" data-template="v-fc:BlankTemplate"></div>
+</div>
+  """;
+.
+
+# ------------------------------------------------------------ УПРАВЛЕНИЕ ПРАВАМИ --
+
+v-s:Report_permission1
+  rdf:type v-s:PermissionStatement ;
+  v-s:permissionObject v-s:Report ;
+  v-s:permissionSubject cfg:AllUsersGroup ;
+  v-s:canCreate "true"^^xsd:boolean ;
+  rdfs:label "C. Все пользователи. Класс v-s:Report" ;
+.
+v-s:Report_permission2
+  rdf:type v-s:PermissionStatement ;
+  v-s:permissionObject v-s:PersonalReport ;
+  v-s:permissionSubject cfg:AllUsersGroup ;
+  v-s:canCreate "true"^^xsd:boolean ;
+  rdfs:label "C. Все пользователи. Класс v-s:PersonalReport" ;
+.

@@ -1,0 +1,35 @@
+Q: - редактирую индивид типа v-wf:WorkOrder, но ничего не меняется, процесс дальше не идет ?
+A: - для того чтобы, при изменении рабочего задания (work_order) запустилась его обработка, необходимо в индивид добавить v-wf:enforceProcessing = true.
+
+Q: - есть пустое рабочее задание, на нем застрял маршрут, как его продвинуть далее ?
+A: -  Для того чтобы продвинуть исполнение маршрута следует указать что это рабочее задание уже выполнено.
+     в исполненном рабочем задании должны быть результирующие переменные в поле v-wf:outVars, если их нет и неясно что должно быть,
+     можно попытатся добавить предзаполненную переменную v-wf:complete.
+
+     пример:
+
+        было:
+            d:vjbh3mt39h3cyl4fi1p3v1u4 a v-wf:WorkOrder;
+            v-wf:forWorkItem d:imvezy9fggkok8opalhdaode.
+
+        добавили:
+
+            d:vjbh3mt39h3cyl4fi1p3v1u4 a v-wf:WorkOrder;
+            v-wf:forWorkItem d:imvezy9fggkok8opalhdaode;
+            v-wf:enforceProcessing "true"^^boolean;
+            v-wf:outVars v-wf:complete.
+
+	    для примера, поле v-wf:enforceProcessing в json формате:
+
+	     "v-wf:enforceProcessing": [
+	      {
+    		"type": "Boolean",
+    		"data": true
+	      }
+	    ]
+
+
+        ! внимание, после того как маршрут продолжился исполнятся следует удалить поле v-wf:enforceProcessing "true"^^boolean;
+
+
+можно так-же найти форму ответа пользователя и в ней перейти к нужному workorder через поле v-wf:onWorkOrder

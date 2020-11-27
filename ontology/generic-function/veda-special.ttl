@@ -1,0 +1,120 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://semantic-machines.com/veda/veda-special>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология системы Veda"@ru ;
+  rdfs:label "Veda system ontology"@en ;
+#  owl:versionInfo "1.3" ;
+  v-s:loadPriority 6 ;
+.
+
+# ------------------------------------------------------------
+v-s:BackwardLink
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Обратная связь"@ru ;
+  rdfs:label "Reverse Link"@en ;
+.
+v-s:backwardTarget
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:BackwardLink ;
+  rdfs:label "целевой объект"@ru ;
+  rdfs:label "target object"@en ;
+  rdfs:range rdfs:Resource ;
+.
+v-s:backwardProperty
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:BackwardLink ;
+  rdfs:label "целевое свойство"@ru ;
+  rdfs:label "backward property"@en ;
+  rdfs:range owl:ObjectProperty ;
+.
+v-s:backwardReplace
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:BackwardLink ;
+  rdfs:label "целевая замена"@ru ;
+  rdfs:label "backward replace"@en ;
+  rdfs:range owl:ObjectProperty ;
+.
+v-s:backwardForceUpdate
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:BackwardLink ;
+  rdfs:label "принудительно обновить"@ru ;
+  rdfs:label "force update"@en ;
+  rdfs:range xsd:boolean ;
+.
+# ------------------------------------------------------------
+v-s:Exportable
+  rdf:type owl:Class ;
+  rdfs:subClassOf rdfs:Resource ;
+  rdfs:label "Выгружаемая сущность"@ru ;
+  rdfs:label "Exportable thing"@en ;
+.
+### ------------------------------------------------------
+v-s:Embedded
+  rdf:type owl:Class ;
+  rdfs:subClassOf rdfs:Resource ;
+  rdfs:label "Вложенный"@ru ;
+  rdfs:label "Embedded"@en ;
+.
+v-s:parent
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Embedded ;
+  rdfs:label "Родитель"@ru ;
+  rdfs:label "Parent"@en ;
+  rdfs:range rdfs:Resource ;
+.
+### ------------------------------------------------------
+v-s:Versioned
+  rdf:type owl:Class ;
+  rdfs:subClassOf rdfs:Resource ;
+  rdfs:label "Версионная сущность"@ru ;
+  rdfs:label "Versioned thing"@en ;
+.
+v-s:actualVersion
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Versioned ;
+  rdfs:label "Актуальная версия"@ru ;
+  rdfs:label "Actual version"@en ;
+  rdfs:range v-s:Versioned ;
+.
+v-s:previousVersion
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Versioned ;
+  rdfs:label "Предыдущая версия"@ru ;
+  rdfs:label "Previous version"@en ;
+  rdfs:range v-s:Versioned ;
+.
+v-s:nextVersion
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Versioned ;
+  rdfs:label "Следующая версия"@ru ;
+  rdfs:label "Next version"@en ;
+  rdfs:range v-s:Versioned ;
+.
+### ------------------------------------------------------
+v-s:ManuallyVersioned
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Versioned ;
+  rdfs:label "Версионная сущность, версии создаются вручную"@ru ;
+  rdfs:label "Versioned thing, versions are created manually"@en ;
+.
+
+v-s:triggerVersionCreation
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:ManuallyVersioned ;
+  rdfs:label "Создать версию"@ru ;
+  rdfs:label "Create version"@en ;
+  rdfs:range xsd:boolean ;
+.
+### ------------------------------------------------------
+v-s:AutomaticallyVersioned
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Versioned ;
+  rdfs:label "Версионная сущность, версии создаются автоматически"@ru ;
+  rdfs:label "Versioned thing, versions are created automatically"@en ;
+.

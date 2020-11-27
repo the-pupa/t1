@@ -1,0 +1,544 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix v-fs: <http://semantic-machines.com/veda/veda-search/> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix v-ui: <http://semantic-machines.com/veda/veda-ui/> .
+@prefix td: <http://semantic-machines.com/veda/test-data/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://semantic-machines.com/veda/veda-core>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология системы Veda"@ru ;
+  rdfs:label "Veda system ontology"@en ;
+  v-s:loadPriority 6 ;
+.
+
+v-s:AppInfo
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Информация о приложении"@ru ;
+  rdfs:label "Application info"@en ;
+.
+
+v-s:appBuildVersion
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:AppInfo ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Версия приложения"@ru ;
+  rdfs:label "Version of the application"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:appBuildDate
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:AppInfo ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "Дата сборки приложения"@ru ;
+  rdfs:label "Build date of the application"@en ;
+  rdfs:range xsd:dateTime ;
+.
+
+v-s:appUrl
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:AppInfo ;
+  rdfs:isDefinedBy v-s: ;
+  rdfs:label "App url"@ru ;
+  rdfs:range xsd:string ;
+.
+
+v-s:Module
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Модуль"@ru ;
+  rdfs:label "Module"@en ;
+.
+
+v-s:moduleUrl
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Module, v-s:RequestToModulesManager ;
+  rdfs:label "Url модуля"@ru ;
+  rdfs:label "Module url"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:moduleVersion
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Module ;
+  rdfs:label "Версия модуля"@ru ;
+  rdfs:label "Module version"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:RequestToModulesManager
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Запрос к менеджеру модулей"@ru ;
+  rdfs:label "Request to modules manager"@en ;
+.
+
+v-s:command
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:RequestToModulesManager ;
+  rdfs:label "Команда"@ru ;
+  rdfs:label "Command"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:journalOfRequest
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:RequestToModulesManager ;
+  rdfs:label "Журнал запроса"@ru ;
+  rdfs:label "Request journal"@en ;
+  rdfs:range v-s:Journal ;
+.
+
+v-s:requestList
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Module, v-s:AppInfo ;
+  rdfs:label "Список запросов"@ru ;
+  rdfs:label "Request List"@en ;
+  rdfs:range v-s:RequestToModulesManager ;
+.
+
+v-s:moduleList
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:RequestToModulesManager ;
+  rdfs:label "Список модулей"@ru ;
+  rdfs:label "Modules List"@en ;
+  rdfs:range v-s:Module ;
+.
+
+# ---------------------------------- КЛАССЫ --
+
+v-s:ExecuteScript
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:subClassOf v-s:Deliverable ;
+  rdfs:label "Выполнить скрипт" ;
+.
+
+# Эти 2 свойства пока отнесены к классу v-s:Deliverable. Нужно подумать, может нужен абстрактный класс типа v-s:Executed
+# v-s:infoOfExecuting
+# v-s:isSuccess
+
+v-s:isExecuted
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:ExecuteScript ;
+  rdfs:label "Исполняется" ;
+  rdfs:range xsd:boolean ;
+.
+v-s:useScript
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:ExecuteScript ;
+  rdfs:label "Использовать скрипт" ;
+  rdfs:range v-s:Codelet ;
+.
+v-s:priority
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:ExecuteScript ;
+  rdfs:label "Приоритет"@ru ;
+  rdfs:label "Priority"@en ;
+  rdfs:range xsd:integer ;
+.
+v-s:argument
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:ExecuteScript ;
+  rdfs:label "Аргумент" ;
+  rdfs:range v-s:Variable ;
+.
+v-s:result
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:ExecuteScript ;
+  rdfs:label "Результаты" ;
+  rdfs:range v-s:Variable ;
+.
+
+v-s:Variable
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Переменная"@ru ;
+  rdfs:label "Variable"@en ;
+.
+v-s:variableName
+  rdf:type rdf:Property ;
+  rdfs:label "Имя переменной"@ru ;
+  rdfs:label "Variable name"@en ;
+  rdfs:domain v-s:Variable ;
+  rdfs:range xsd:string ;
+.
+v-s:variableValue
+  rdf:type rdf:Property ;
+  rdfs:label "Значение переменной"@ru ;
+  rdfs:label "Variable value"@en ;
+  rdfs:domain v-s:Variable ;
+  rdfs:range rdfs:Resource ;
+.
+
+# ------------------------------------------------------------
+
+v-s:Account
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:UserThing ;
+  rdfs:subClassOf v-s:Deliverable2 ;
+  rdfs:subClassOf v-s:BackwardLink ;
+  rdfs:label "Учетная запись"@ru ;
+  rdfs:label "Account"@en ;
+.
+
+v-s:GitAccount
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Account ;
+.
+
+v-s:Credential
+  rdf:type owl:Class ;
+  rdfs:label "Credential" ;
+.
+
+v-s:login
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Account ;
+  rdfs:domain v-s:Connection ;
+  rdfs:label "Логин"@ru ;
+  rdfs:label "Login"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:password
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Account ;
+  rdfs:domain v-s:Credential ;
+  rdfs:domain v-s:Connection ;
+  rdfs:label "Пароль"@ru ;
+  rdfs:label "Password"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:authType
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Account, v-s:Credential;
+  rdfs:label "Тип авторизации"@ru ;
+  rdfs:label "Auth type"@en ;
+  rdfs:range xsd:string ;
+.
+
+v-s:usesCredential
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Account;
+  rdfs:label "uses credential" ;
+  rdfs:range v-s:Credential ;
+.
+
+# ------------------------------------------------------------
+v-s:Codelet
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Исполняемый Код"@ru ;
+  rdfs:label "Codelet"@en ;
+.
+
+# ------------------------------------------------------------
+v-s:Container
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Контейнер"@ru ;
+.
+
+# ------------------------------------------------------------
+
+v-s:TTLFile
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Container ;
+  rdfs:subClassOf v-s:File ;
+  rdfs:label "TTL файл"@ru ;
+  rdfs:label "TTL file"@en ;
+.
+v-s:hash
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Хэш"@ru ;
+  rdfs:label "Hash"@en ;
+  rdfs:domain v-s:TTLFile ;
+  rdfs:range xsd:string ;
+.
+
+# ------------------------------------------------------------
+v-s:Event
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Событие"@ru ;
+  rdfs:label "Event"@en ;
+.
+v-s:triggerByType
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Event ;
+  rdfs:label "Срабатывать по типу"@ru ;
+  rdfs:label "Trigger by type"@en ;
+  rdfs:range rdfs:Resource ;
+.
+v-s:preventByType
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Event ;
+  rdfs:label "Не обрабатывать объекты типа"@ru ;
+  rdfs:label "Prevent by type"@en ;
+  rdfs:range rdfs:Resource ;
+.
+v-s:triggerByUid
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Event ;
+  rdfs:label "Срабатывать по ID"@ru ;
+  rdfs:label "Trigger by ID"@en ;
+  rdfs:range rdfs:Resource ;
+.
+v-s:dependency
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Event, v-s:Module ;
+  rdfs:label "Зависимость"@ru ;
+  rdfs:label "Dependency"@en ;
+  rdfs:range rdfs:Resource ;
+.
+v-s:disabled
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Event ;
+  rdfs:label "Выключен"@ru ;
+  rdfs:label "Disabled"@en ;
+  rdfs:range xsd:boolean ;
+.
+v-s:runAt
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Event ;
+  rdfs:label "Исполнять в"@ru ;
+  rdfs:label "Run at"@en ;
+  rdfs:range xsd:string ;
+.
+
+# ------------------------------------------------------------
+v-s:Group
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:comment "Группа ресурсов"@ru ;
+  rdfs:comment "Group of resources"@en ;
+  rdfs:label "Группа"@ru ;
+  rdfs:label "Group"@en ;
+.
+
+# ------------------------------------------------------------
+v-s:Membership
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Принадлежность"@ru ;
+  rdfs:label "Membership"@en ;
+.
+v-s:memberOf
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Membership ;
+  rdfs:label "Член группы"@ru ;
+  rdfs:label "Member of group"@en ;
+  rdfs:range v-s:Group ;
+.
+v-s:ignoreExclusive
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Убрать ограничение прав"@ru ;
+  rdfs:label "Remove restriction of rightsp"@en ;
+  rdfs:range xsd:boolean ;
+  rdfs:domain v-s:Membership ;
+.
+
+v-s:isExclusive
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Ограничить"@ru ;
+  rdfs:label "Limit"@en ;
+  rdfs:range xsd:boolean ;
+  rdfs:domain v-s:Membership ;
+.
+
+# ------------------------------------------------------------
+
+v-s:StatusStatement
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:subClassOf v-s:BackwardLink ;
+  rdfs:label "Запись о статусе"@ru ;
+  rdfs:label "Status statement"@en ;
+.
+
+# v-s:resource (domain)
+# v-s:hasStatus (v-s:Thing)
+# v-s:backwardTarget (v-s:BackwardLink)
+# v-s:backwardProperty (v-s:BackwardLink)
+
+v-s:hasStatusStatement
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Запись о статусе"@ru ;
+  rdfs:label "Status statement"@en ;
+  rdfs:range v-s:StatusStatement ;
+  rdfs:domain v-s:Thing ;
+.
+
+# Нужен абстрактный класс и наследование не от v-s:Thing
+v-s:canCreate
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:PermissionStatement ;
+  rdfs:domain v-s:Membership ;
+  rdfs:domain v-s:StatusStatement ;
+  rdfs:domain v-s:BackwardLink ;
+  rdfs:label "Можно создавать"@ru ;
+  rdfs:label "Can create"@en ;
+  rdfs:range xsd:boolean ;
+.
+v-s:canDelete
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:PermissionStatement ;
+  rdfs:domain v-s:Membership ;
+  rdfs:domain v-s:StatusStatement ;
+  rdfs:domain v-s:BackwardLink ;
+  rdfs:label "Можно удалять"@ru ;
+  rdfs:label "Can delete"@en ;
+  rdfs:range xsd:boolean ;
+.
+v-s:canRead
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:PermissionStatement ;
+  rdfs:domain v-s:Membership ;
+  rdfs:domain v-s:StatusStatement ;
+  rdfs:domain v-s:BackwardLink ;
+  rdfs:domain v-s:GroupGenerator ;
+  rdfs:domain v-s:PermissionGenerator ;
+  rdfs:label "Можно читать"@ru ;
+  rdfs:label "Can read"@en ;
+  rdfs:range xsd:boolean ;
+.
+v-s:canUpdate
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:PermissionStatement ;
+  rdfs:domain v-s:Membership ;
+  rdfs:domain v-s:StatusStatement ;
+  rdfs:domain v-s:BackwardLink ;
+  rdfs:label "Можно изменять"@ru ;
+  rdfs:label "Can update"@en ;
+  rdfs:range xsd:boolean ;
+.
+# Нужен абстрактный класс
+v-s:resource
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Membership ;
+  rdfs:domain v-s:StatusStatement ;
+  rdfs:domain v-s:Container ;
+  rdfs:label "Ресурс"@ru ;
+  rdfs:label "Resource"@en ;
+  rdfs:range rdfs:Resource ;
+.
+# ------------------------------------------------------------
+v-s:PermissionStatement
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:comment "Запись о выдаче прав описывает права индивидов одного класса по отношению к индивидам другого класса."@ru ;
+  rdfs:comment "Permissions record defines access rigths for individuals of one class to individuals of another class."@en ;
+  rdfs:label "Запись о выдаче прав"@ru ;
+  rdfs:label "Permissions record"@en ;
+.
+
+# v-s:hasStatus (v-s:Thing)
+
+v-s:permissionObject
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Объект, на который выдаются права."@ru ;
+  rdfs:comment "An object to which rights are granted."@en ;
+  rdfs:domain v-s:PermissionStatement ;
+  rdfs:label "Объект полномочий (что)"@ru ;
+  rdfs:label "Permission object (what)"@en ;
+  rdfs:range rdfs:Resource ;
+.
+v-s:permissionSubject
+  rdf:type owl:ObjectProperty ;
+  rdfs:comment "Субъект, которому предоставляются права."@ru ;
+  rdfs:comment "Subject whom rights are granted."@en ;
+  rdfs:domain v-s:PermissionStatement ;
+  rdfs:label "Субъект полномочий (кто)"@ru ;
+  rdfs:label "Permission subject (who)"@en ;
+  rdfs:range rdfs:Resource ;
+.
+
+# Нужен суперкласс
+v-s:startTime
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:PermissionStatement ;
+  rdfs:label "Время начала"@ru ;
+  rdfs:label "Start time"@en ;
+  rdfs:range xsd:dateTime ;
+.
+v-s:endTime
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:PermissionStatement ;
+  rdfs:label "Время окончания"@ru ;
+  rdfs:label "End time"@en ;
+  rdfs:range xsd:dateTime ;
+.
+# ------------------------------------------------------------
+v-s:Transform
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Для переливки из старой системы"@ru ;
+.
+v-s:destClass
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Transform ;
+  rdfs:label "Название класса, в который вписываем"@ru ;
+  rdfs:range xsd:string ;
+.
+v-s:destProperty
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Transform ;
+  rdfs:label "Название свойства, в которое вписываем"@ru ;
+  rdfs:range xsd:string ;
+.
+v-s:srcClassName
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Transform ;
+  rdfs:label "Id шаблона, из которого берем"@ru ;
+  rdfs:range xsd:string ;
+.
+v-s:srcPropertyName
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Transform ;
+  rdfs:label "Имя аттрибута, которое берем"@ru ;
+  rdfs:range xsd:string ;
+.
+# ------------------------------------------------------------
+v-s:Version
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Версия"@ru ;
+  rdfs:label "Version"@en ;
+.
+
+# ------------------------------------------------------------
+
+# Нужен абстрактный класс
+
+v-s:script
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain v-s:Event, v-s:Codelet, v-ui:ClassModel, v-s:UserScript ;
+  rdfs:label "Скрипт"@ru ;
+  rdfs:label "Script"@en ;
+  rdfs:range xsd:string ;
+.
+
+# ------------------------------------------------------------ Расширение класса owl:Ontology --
+
+v-s:fullUrl
+  rdf:type owl:DatatypeProperty ;
+  rdfs:domain owl:Ontology ;
+  rdfs:label "Полный URL"@ru ;
+  rdfs:label "Full URL"@en ;
+  rdfs:range xsd:string ;
+.
+
+
+# ------------------------------------------------------------ INDIVIDUALS --
+v-s:AllResourcesGroup
+  rdf:type v-s:Group ;
+  rdfs:label "Все ресурсы"@ru ;
+  rdfs:label "All resources"@en ;
+.

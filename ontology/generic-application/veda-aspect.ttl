@@ -1,0 +1,448 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix v-ui: <http://semantic-machines.com/veda/veda-ui/> .
+@prefix v-fc: <http://semantic-machines.com/veda/veda-function-create/> .
+@prefix v-fs: <http://semantic-machines.com/veda/veda-function-search/> .
+@prefix v-ft: <http://semantic-machines.com/veda/veda-function-tasks/> .
+@prefix td: <http://semantic-machines.com/veda/test-data/> .
+
+@prefix v-asp: <http://semantic-machines.com/veda/veda-aspect/> .
+<http://semantic-machines.com/veda/veda-aspect>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология аспекта системы Веда"@ru ;
+  rdfs:label "Veda system aspect ontology"@en ;
+#  owl:versionInfo "1.1" ;
+  v-s:loadPriority 9 ;
+.
+
+v-s:Aspect
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:SystemThing ;
+  rdfs:label "Аспект"@ru ;
+  rdfs:label "Aspect"@en ;
+.
+
+v-s:PersonalAspect
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Aspect ;
+  rdfs:subClassOf v-s:Labeled ;
+  v-s:labelPattern "{@.v-s:owner.rdfs:label}" ;
+  rdfs:label "Персональный аспект"@ru ;
+  rdfs:label "Personal aspect"@en ;
+.
+
+v-s:BusinessAspect
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Aspect ;
+  rdfs:label "Деловой аспект"@ru ;
+  rdfs:label "Business aspect"@en ;
+.
+
+v-s:hasApplication
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Aspect ;
+  rdfs:range v-s:Application ;
+  rdfs:label "Приложение"@ru ;
+  rdfs:label "Application"@en ;
+.
+
+v-s:hasFavorite
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Aspect ;
+  rdfs:range rdfs:Resource ;
+  rdfs:label "Избранное"@ru ;
+  rdfs:label "Favorite"@en ;
+.
+
+v-s:hasBlank
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Aspect ;
+  rdfs:range v-fc:Blank ;
+  rdfs:label "Бланк"@ru ;
+  rdfs:label "Blank"@en ;
+.
+
+v-s:hasCreate
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Aspect ;
+  rdfs:range v-fc:Create ;
+  rdfs:label "Бланк"@ru ;
+  rdfs:label "Blank"@en ;
+.
+
+v-s:hasRegistry
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Aspect ;
+  rdfs:range v-fs:AttributiveSearch ;
+  rdfs:range v-s:LinksTree ;
+  rdfs:range v-ui:Tree ;
+  rdfs:label "Реестр"@ru ;
+  rdfs:label "Registry"@en ;
+.
+
+v-s:hasReport
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Aspect ;
+  rdfs:range rdfs:Resource ;
+  rdfs:label "Отчет"@ru ;
+  rdfs:label "Report"@en ;
+.
+
+v-s:hasArbitraryLink
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Aspect ;
+  rdfs:range rdfs:Resource ;
+  rdfs:label "Произвольная ссылка"@ru ;
+  rdfs:label "Arbitrary link"@en ;
+.
+
+v-s:hasWidget
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Aspect ;
+  rdfs:range rdfs:Resource ;
+  rdfs:label "Виджет"@ru ;
+  rdfs:label "Widget"@en ;
+.
+
+v-s:hasBusinessAspect
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Aspect ;
+  rdfs:range v-s:BusinessAspect ;
+  rdfs:label "Связанный деловой аспект"@ru ;
+  rdfs:label "Related business aspect"@en ;
+.
+
+v-s:hasAspect
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain v-s:Person ;
+  rdfs:label "Персональный аспект"@ru ;
+  rdfs:label "Personal aspect"@en ;
+  rdfs:range v-s:Aspect ;
+.
+
+v-s:PsHasAspect
+  rdf:type v-ui:ObjectPropertySpecification ;
+  rdfs:label "Спецификация персонального аспекта класса Персона"@ru ;
+  rdfs:label "Personal aspect specification for Person class"@en ;
+  v-ui:forClass v-s:Person ;
+  v-ui:forProperty v-s:hasAspect ;
+  v-ui:minCardinality "1"^^xsd:nonNegativeInteger ;
+  v-ui:maxCardinality "1"^^xsd:nonNegativeInteger ;
+  v-ui:tooltip "Обязательно к заполнению, единичное значений. Ссылка на субъект класса Персональный аспект."@ru ;
+  v-ui:tooltip "Required, single value. Link to instance of Personal aspect class"@en ;
+  v-ui:queryPrefix "('rdf:type'=='v-s:PersonalAspect')"^^xsd:string ;
+.
+
+v-s:PersonalInfo
+  rdf:type v-s:Bundle ;
+  rdfs:label "Личная информация"@ru ;
+  rdfs:label "Personal info"@en ;
+.
+v-s:Registries
+  rdf:type v-s:Bundle ;
+  rdfs:label "Реестры"@ru ;
+  rdfs:label "Registries"@en ;
+.
+v-s:Blanks
+  rdf:type v-s:Bundle ;
+  rdfs:label "Бланки"@ru ;
+  rdfs:label "Blanks"@en ;
+.
+v-s:AddToFavorites
+  rdf:type v-s:Bundle ;
+  rdfs:label "Добавить избранное"@ru ;
+  rdfs:label "Add favorite"@en ;
+.
+v-s:RemoveFromFavorites
+  rdf:type v-s:Bundle ;
+  rdfs:label "Удалить избранное"@ru ;
+  rdfs:label "Remove favorite"@en ;
+.
+
+# Templates-------------------------
+v-s:TS_Aspect 
+  rdf:type v-ui:TemplateSpecification;
+  v-s:loadPriority "15"^^xsd:integer;
+  v-ui:defaultTemplate v-s:AspectTemplate;
+  v-ui:forClass v-s:Aspect
+.
+v-s:TS_PersonalAspect 
+  rdf:type v-ui:TemplateSpecification;
+  v-s:loadPriority "15"^^xsd:integer;
+  v-ui:defaultTemplate v-s:PersonalAspectTemplate;
+  v-ui:forClass v-s:PersonalAspect
+.
+
+v-s:PersonalAspectTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон для класса Персональный аспект"@ru ;
+  rdfs:label "Template for Personal aspect class"@en ;
+  rdfs:comment "Моя страница"@ru ;
+  rdfs:comment "My page"@en ;
+  v-ui:forClass v-s:PersonalAspect ;
+  v-ui:template """
+<div class="container">
+  <ul class="nav nav-right" role="tablist">
+    <li class="pull-left"><h2 class="no-margin" about="v-s:PersonalAspectTemplate" property="rdfs:comment" style="color:#555;"></h2></li>
+    <li class="pull-right"><span about="@" data-template="v-ui:StandardButtonsTemplate" data-embedded="true" data-buttons="edit save cancel"></span></li>
+  </ul>
+  <br>
+  <div class="row" style="display: flex; flex-flow: row wrap;">
+    <div class="col-md-4 col-sm-6 col-xs-12" style="display: flex;" about="@" rel="v-s:owner" data-template="v-s:PersonalImageTemplate" data-embedded="true"></div>
+    <div class="col-md-4 col-sm-6 col-xs-12" style="display: flex;" about="@" rel="v-s:owner" data-template="v-s:PersonalInfoTemplate" data-embedded="true"></div>
+    <div class="col-md-4 col-sm-6 col-xs-12" style="display: flex;" about="@" rel="v-s:owner" data-embedded="true">
+      <div about="@" style="display: flex; width: 100%" rel="v-ui:hasPreferences" data-template="v-s:PersonalPreferencesTemplate" data-embedded="true"></div>
+    </div>
+  </div>
+  <div class="row" style="display: flex; flex-flow: row wrap;">
+    <div class="blanks col-md-4 col-sm-6 col-xs-12" style="display: flex;">
+      <div class="sheet" style="width:100%;">
+        <h4 class="text-center" style="text-transform: uppercase"><i class="fa fa-file-text-o text-muted margin-md-h"></i><span about="v-s:CreateBundle" property="rdfs:label"></span></h4>
+        <div rel="v-s:hasBlank">
+          <a href="#/@" class="btn btn-success btn-lg btn-block margin-lg" about="@" property="rdfs:label" style="white-space: normal;"></a>
+        </div>
+        <div rel="v-s:hasCreate">
+          <a href="#/@" class="btn btn-success btn-lg btn-block margin-lg" about="@" property="rdfs:label" style="white-space: normal;"></a>
+        </div>
+      </div>
+    </div>
+    <div class="registries col-md-4 col-sm-6 col-xs-12" style="display: flex;">
+      <div class="sheet" style="width:100%;">
+        <h4 class="text-center" style="text-transform: uppercase"><i class="fa fa-table text-muted margin-md-h"></i><span about="v-s:FindBundle" property="rdfs:label"></span></h4>
+        <div rel="v-s:hasRegistry">
+          <a href="#/@" class="btn btn-info btn-lg btn-block margin-lg" about="@" property="rdfs:label" style="white-space: normal;"></a>
+        </div>
+      </div>
+    </div>
+    <div class="reports col-md-4 col-sm-6 col-xs-12" style="display: flex;">
+      <div class="sheet" style="width:100%;">
+        <h4 class="text-center" style="text-transform: uppercase"><i class="fa fa-bar-chart text-muted margin-md-h"></i><span about="v-s:Report" property="rdfs:label"></span></h4>
+        <div rel="v-s:hasReport">
+          <a href="#/@" class="btn btn-warning btn-lg btn-block margin-lg" about="@" property="rdfs:label" style="white-space: normal;"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sheet">
+    <h4 class="text-center" style="text-transform: uppercase">
+      <i class="fa fa-star text-muted margin-md-h"></i><span about="v-s:Favorites" property="rdfs:label"></span>
+    </h4>
+    <hr class="margin-lg">
+    <ol rel="v-s:hasFavorite" class="columns-3">
+      <li rel="v-s:onDocument" data-template="v-ui:ClassNameLabelLinkTemplate"></li>
+    </ol>
+  </div>
+</div>
+<script>
+  var subscriptions = individual["v-s:hasFavorite"];
+  var subscribeDiff = [];
+  function favoriteHandler () {
+    if (individual["v-s:hasFavorite"].length < subscriptions.length) {
+      subscriptions.forEach(function(subscribe) {
+        var isExist = individual["v-s:hasFavorite"].some(function(f) {
+          return f.id == subscribe.id;
+        });
+        if (!isExist) subscribeDiff.push(subscribe);
+      });
+    };
+    subscriptions = individual["v-s:hasFavorite"];
+  }
+
+  function saveHandler() {
+    if (subscribeDiff.length > 0) {
+      subscribeDiff.forEach(function(subscribe) {
+        subscribe.remove();
+      });
+    };
+  }
+
+  individual.on("beforeSave", saveHandler);
+  individual.on("v-s:hasFavorite", favoriteHandler);
+  template.one("remove", function() {
+    individual.off("v-s:hasFavorite", favoriteHandler);
+    individual.off("beforeSave", saveHandler);
+  })
+</script>
+  """ ;
+.
+
+v-s:PersonalImageTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон отображения персональной информации"@ru ;
+  rdfs:label "Personal information template"@en ;
+  v-ui:forClass v-s:Person ;
+  v-ui:template """
+<script>
+  this.on("v-s:hasImage", this.save);
+  template.one("remove", function () {
+      this.off("v-s:hasImage", this.save);
+  });
+  if ( !this.hasValue("v-s:hasImage") ) {
+    this["v-s:hasImage"] = [ new veda.IndividualModel("v-s:DefaultPhoto") ];
+  }
+</script>
+<div class="sheet" style="display: flex; flex-flow: column; width: 100%">
+  <div rel="v-s:hasImage" data-template="v-ui:ImageTemplate"></div>
+  <br>
+  <div class="text-center" style="margin-top: auto;">
+    <veda-control rel="v-s:hasImage" data-type="file" class="view edit search"></veda-control>
+  </div>
+</div>
+  """ ;
+.
+
+v-s:PersonalInfoTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон отображения персональной информации"@ru ;
+  rdfs:label "Personal information template"@en ;
+  v-ui:forClass v-s:Person ;
+  v-ui:template """
+<div class="sheet" style="display: flex; flex-flow: column; width: 100%">
+  <h3 class="no-margin"><span about="@" property="v-s:lastName"></span> <span about="@" property="v-s:firstName"></span> <span about="@" property="v-s:middleName"></span></h3>
+  <veda-control property="v-s:lastName" data-type="multilingualString" class="-view edit search"></veda-control>
+  <veda-control property="v-s:firstName" data-type="multilingualString" class="-view edit search"></veda-control>
+  <veda-control property="v-s:middleName" data-type="multilingualString" class="-view edit search"></veda-control>
+  <br/>
+  <div class="form-inline">
+    <div class="form-group">
+      <label about="v-s:birthday" property="rdfs:label"></label>:
+      <span class="view -edit -search" about="@" property="v-s:birthday"></span>
+      <veda-control property="v-s:birthday" data-type="date" class="-view edit search"></veda-control>
+    </div>
+  </div>
+  <br/>
+  <div class="form-inline">
+    <div class="form-group">
+      <label about="v-s:occupation" property="rdfs:label"></label>:
+      <span about="@" rel="v-s:defaultAppointment">
+        <span about="@" rel="v-s:occupation" data-template="v-ui:LabelTemplate"></span>,
+        <span about="@" rel="v-s:parentUnit" data-template="v-ui:LabelTemplate"></span>
+      </span>
+    </div>
+  </div>
+  <br/>
+  <div class="form-inline">
+    <div class="form-group">
+      <label about="v-s:phone" property="rdfs:label"></label>:
+      <span class="view -edit -search" about="@" rel="v-s:hasAccount" data-embedded="true">
+        <span class="view -edit -search" about="@" property="v-s:phone"></span>
+      </span>
+      <veda-control property="v-s:phone" data-type="string" class="-view edit search"></veda-control>
+    </div>
+  </div>
+  <br/>
+  <div class="form-inline">
+    <div class="form-group">
+      <label about="v-s:mailbox" property="rdfs:label"></label>:
+      <span about="@" rel="v-s:hasAccount" data-embedded="true">
+        <span>
+          <a class="view -edit -search" about="@" property="v-s:mailbox"></a>
+          <veda-control property="v-s:mailbox" data-type="string" class="-view edit search"></veda-control>
+        </span>
+        <script>
+          template.find("a").attr("href", "mailto:" + individual["v-s:mailbox"][0]);
+        </script>
+      </span>
+    </div>
+  </div>
+  <br/>
+  <div class="form-inline">
+    <div class="form-group">
+      <label about="v-s:login" property="rdfs:label"></label>:
+      <span about="@" rel="v-s:hasAccount">
+        <span about="@" property="v-s:login"></span>
+      </span>
+    </div>
+  </div>
+</div>
+  """;
+.
+
+v-s:UISettingsBundle
+  rdf:type v-s:Bundle ;
+  rdfs:label "Настройки интерфейса"@ru ;
+  rdfs:label "Interface settings"@en ;
+.
+
+v-s:MessageSettingsBundle
+  rdf:type v-s:Bundle ;
+  rdfs:label "Настройки сообщений"@ru ;
+  rdfs:label "Message settings"@en ;
+.
+
+v-s:RejectBundle
+  rdf:type v-s:Bundle ;
+  rdfs:label "Отказаться"@ru ;
+  rdfs:label "Reject"@en ;
+.
+
+v-s:TheseMessagesBundle
+  rdf:type v-s:Bundle ;
+  rdfs:label "от этих сообщений:"@ru ;
+  rdfs:label "these messages:"@en ;
+.
+
+v-s:PersonalPreferencesTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон персональных предпочтений"@ru ;
+  rdfs:label "Personal preferences template"@en ;
+  v-ui:template """
+<div class="sheet" style="display: flex; flex-flow: column; width: 100%">
+  <h3 class="no-margin" about="v-s:UISettingsBundle" property="rdfs:label"></h3>
+  <br/>
+  <div class="form-inline">
+    <div class="form-group">
+      <label about="v-ui:preferredLanguage" property="rdfs:label"></label>:
+      <veda-control rel="v-ui:preferredLanguage" data-type="checkbox" class="view edit search fulltext dropdown"></veda-control>
+    </div>
+  </div>
+  <br/>
+  <div class="form-inline">
+    <div class="form-group">
+      <label about="v-ui:displayedElements" property="rdfs:label"></label>:
+      <span class="view -edit -search" about="@" property="v-ui:displayedElements"></span>
+      <veda-control property="v-ui:displayedElements" data-type="select" data-source="{[5,10,20]}" class="-view edit search"></veda-control>
+    </div>
+  </div>
+  <br/>
+  <div class="checkbox" style="margin-top:0px;">
+    <label>
+      <veda-control property="v-ui:fullWidth" data-type="boolean"></veda-control>
+      <strong about="v-ui:fullWidth" property="rdfs:label"></strong>
+    </label>
+  </div>
+  <h3 about="v-s:MessageSettingsBundle" property="rdfs:label"></h3>
+  <em about="v-ui:rejectMessageType" property="rdfs:label"></em>
+  <veda-control rel="v-ui:rejectMessageType" data-type="checkbox"></veda-control>
+  <br/>
+</div>
+  """ ;
+.
+
+v-s:AspectTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон аспекта"@ru ;
+  rdfs:label "Aspect template"@en ;
+  v-ui:forClass v-s:Aspect ;
+  v-ui:template """
+<div class="container" style="position:relative;">
+  <h2 property="rdfs:label" class="text-center" style="color:#555"></h2>
+  <div class="row margin-xl" about="@" rel="v-s:hasApplication" style="display: flex; flex-flow: row wrap;">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display: flex;">
+      <div about="@" data-template="v-s:ApplicationSmallCardTemplate" style="display: flex; width:100%;"></div>
+    </div>
+  <div>
+</div>
+  """ ;
+.
+
+v-s:DefaultPhoto
+  a v-s:File;
+  v-s:fileUri "user.svg"^^xsd:string ;
+  v-s:fileName "user.svg"^^xsd:string ;
+  v-s:thumbnail v-s:DefaultPhoto ;
+  v-s:filePath "/veda"^^xsd:string ;
+.

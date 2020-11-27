@@ -1,0 +1,676 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d: <http://semantic-machines.com/veda/veda-data/> .
+@prefix cfg: <http://semantic-machines.com/veda/config/> .
+@prefix v-fc: <http://semantic-machines.com/veda/veda-function-create/> .
+@prefix v-ui: <http://semantic-machines.com/veda/veda-ui/> .
+@prefix v-wf: <http://semantic-machines.com/veda/veda-workflow/> .
+
+<http://semantic-machines.com/veda/veda-action-schema/>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология системы Veda. Мероприятие. Схема."@ru ;
+  rdfs:label "Veda system ontology. Action. Schema."@en ;
+  v-s:loadPriority 11 ;
+.
+
+# ------------------------------------------------------------ КЛАССЫ --
+v-s:Action
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:UserThing ;
+  rdfs:subClassOf v-s:Journaling ;
+  rdfs:subClassOf v-s:Embedded ;
+  rdfs:subClassOf v-s:AutomaticallyVersioned ;
+  rdfs:subClassOf v-s:Measurable ;
+  rdfs:subClassOf v-s:Controlled ;
+  rdfs:subClassOf v-s:Registered ;
+  rdfs:subClassOf v-s:Temporal ;
+  rdfs:subClassOf v-s:Spatial ;
+  rdfs:subClassOf v-s:Document ;
+  rdfs:subClassOf v-s:BackwardLink ;
+  rdfs:subClassOf v-s:Labeled ;
+  v-s:labelPattern "{@.v-s:registrationNumber} - {@.v-s:description [0,100]}" ;
+  rdfs:label "Мероприятие"@ru ;
+  rdfs:label "Action"@en ;
+#  v-ui:hasTemplate v-s:Action_Template ;
+.
+# --- В связи с вводом класса возникает предикат v-s:hasAction. Он описан в классе v-s:Activity
+
+v-s:PS_hasAction_Action
+  rdf:type v-ui:ObjectPropertySpecification ;
+  v-ui:forClass v-s:Action ;
+  v-ui:forProperty v-s:hasAction ;
+  v-ui:minCardinality 0 ;
+  v-ui:maxCardinality 100 ;
+  #v-ui:queryPrefix "('rdf:type'==='v-s:Action')" ;
+  rdfs:label "Спецификация свойства v-s:hasAction для класса v-s:Action"@ru ;
+  rdfs:label "v-s:hasAction property specification for v-s:Action classes"@en ;
+.
+v-s:PsDateToForAction
+  rdf:type v-ui:DatatypePropertySpecification ;
+  v-ui:forClass v-s:Action ;
+  v-ui:forProperty v-s:dateTo ;
+  v-ui:maxCardinality 1 ;
+  v-ui:minCardinality 0 ;
+  v-ui:tooltip "Небязательно к заполнению, единичное значение."@ru ;
+  v-ui:tooltip "Non-Required, single value."@en ;
+  rdfs:label "Спецификация даты окончания для класса Action"@ru ;
+  rdfs:label "Preferences property specification for dateTo in Action class"@en ;
+.
+
+v-s:PsResponsibleForAction
+  rdf:type v-ui:ObjectPropertySpecification ;
+  v-ui:forClass v-s:Action ;
+  v-ui:forProperty v-s:responsible ;
+  v-ui:maxCardinality 1 ;
+  v-ui:minCardinality 1 ;
+  v-ui:queryPrefix "('rdf:type'=='v-s:Appointment')"^^xsd:string ;
+  v-ui:tooltip "Необязательно к заполнению, единичное значение. Ссылка на объект класса Назначение."@ru ;
+  v-ui:tooltip "Non-required, simple value. Link to instance of Appointment class"@en ;
+  rdfs:label "Спецификация свойства responsible для класса Action"@ru ;
+  rdfs:label "Responsible property specification for Action class"@en ;
+.
+
+# ------------------------------------------------------------ Запланированное событие --
+v-s:ScheduledAction
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Action ;
+  rdfs:subClassOf v-s:BackwardLink ;
+  rdfs:subClassOf v-s:Journaling ;
+  rdfs:subClassOf v-s:Labeled ;
+  rdfs:label "Запланированное событие"@ru ;
+  rdfs:label "Scheduled action"@en ;
+  v-s:labelPattern "{@.v-s:dateToPlan} - {@.v-s:description [0,100]}" ;
+.
+
+# v-s:parent
+# rdfs:label
+# v-s:description
+# v-s:responsible
+# v-s:controller
+# v-s:dateToPlan
+# v-s:scriptHandlered
+v-s:hasPeriod
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Период"@ru ;
+  rdfs:label "Period"@en ;
+  rdfs:domain v-s:ScheduledAction ;
+  rdfs:range v-s:Period ;
+.
+# v-s:dateToFact
+# v-s:hasStatus
+
+v-s:hasScheduledAction
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Запланированное событие"@ru ;
+  rdfs:label "ScheduledAction"@en ;
+  rdfs:domain v-s:ScheduledAction ;
+  rdfs:range v-s:UserThing ;
+.
+# ------------------------------------------------------------ Справочник Период --
+
+v-s:Period
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:UserThing ;
+  rdfs:label "Период"@ru ;
+  rdfs:label "Period"@en ;
+.
+
+# ------------------------------------------------------------ СТРОКИ --
+v-s:TaskPeriodBundle
+  rdf:type v-s:Bundle ;
+  rdfs:label "Выдать задачу за"@ru ;
+  rdfs:label "Task start before"@en ;
+.
+v-s:TaskDateBundle
+  rdf:type v-s:Bundle ;
+  rdfs:label "Дата события"@ru ;
+  rdfs:label "Task date"@en ;
+.
+v-s:TaskGiveAwatDateBundle
+  rdf:type v-s:Bundle ;
+  rdfs:label "Задача выдана"@ru ;
+  rdfs:label "Task give away"@en ;
+.
+v-s:BacwardTargetBundle
+  rdf:type v-s:Bundle ;
+  rdfs:label "Документ"@ru ;
+  rdfs:label "Document"@en ;
+.
+
+#-- Спецификации --
+
+v-s:PsDescriptionForScheduledAction
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:ScheduledAction;
+  v-ui:forProperty v-s:description ;
+  v-ui:minCardinality 1 ;
+  v-ui:maxCardinality 1 ;
+  rdfs:label "Спецификация свойства v-s:description для класса v-s:ScheduledAction"@ru ;
+  rdfs:label "v-s:description property specification for v-s:ScheduledAction class"@en ;
+.
+v-s:PsResponsibleForScheduledAction
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:ScheduledAction;
+  v-ui:forProperty v-s:responsible ;
+  v-ui:minCardinality 1 ;
+  v-ui:maxCardinality 1 ;
+  rdfs:label "Спецификация свойства v-s:responsible для класса v-s:ScheduledAction"@ru ;
+  rdfs:label "v-s:responsible property specification for v-s:ScheduledAction class"@en ;
+.
+v-s:PsDateToPlanForScheduledAction
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:ScheduledAction;
+  v-ui:forProperty v-s:dateToPlan ;
+  v-ui:minCardinality 1 ;
+  v-ui:maxCardinality 1 ;
+  rdfs:label "Спецификация свойства v-s:dateToPlan для класса v-s:ScheduledAction"@ru ;
+  rdfs:label "v-s:dateToPlan property specification for v-s:ScheduledAction class"@en ;
+.
+v-s:PsHasPeriodForScheduledAction
+  rdf:type v-ui:ObjectPropertySpecification ;
+  v-ui:forClass v-s:ScheduledAction;
+  v-ui:forProperty v-s:hasPeriod ;
+  v-ui:minCardinality 1 ;
+  v-ui:maxCardinality 100 ;
+  v-ui:queryPrefix "'rdf:type'=='v-s:Period'"^^xsd:string ;
+  rdfs:label "Спецификация свойства v-s:hasPeriod для класса v-s:ScheduledAction"@ru ;
+  rdfs:label "v-s:hasPeriod property specification for v-s:ScheduledAction class"@en ;
+.
+
+v-s:PscontrollerForScheduledAction
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:ScheduledAction;
+  v-ui:forProperty v-s:controller ;
+  v-ui:minCardinality 0 ;
+  v-ui:maxCardinality 1 ;
+  v-ui:queryPrefix "('rdf:type'=='v-s:Appointment' )  && ('v-s:employee.v-s:hasAccount.isExists'=='true') && ('v-s:origin'=='sap hr' || 'v-s:origin'=='Group User') || ('rdf:type'=='v-s:Position') && ( 'v-s:origin'=='Role')"^^xsd:string;
+  rdfs:label "Спецификация свойства v-s:controller для класса v-s:ScheduledAction"@ru ;
+  rdfs:label "v-s:controller property specification for v-s:ScheduledAction class"@en ;
+.
+
+# ------------------------------------------------------------ УПРАВЛЕНИЕ ПРАВАМИ --
+v-s:ScheduledAction_BaseUser
+  rdf:type v-s:Group ;
+  rdfs:label "Основные пользователи ScheduledAction" ;
+.
+v-s:ScheduledAction_permission1
+  rdf:type v-s:PermissionStatement ;
+  v-s:permissionObject v-s:ScheduledAction ;
+  v-s:permissionSubject v-s:ScheduledAction_BaseUser ;
+  v-s:canCreate "true"^^xsd:boolean ;
+  rdfs:label "C. Все пользователи. Класс ScheduledAction" ;
+.
+v-s:AllUsersGroup_ScheduledActionBaseUser_membership
+  rdf:type v-s:Membership ;
+  v-s:memberOf v-s:ScheduledAction_BaseUser ;
+  v-s:resource cfg:AllUsersGroup ;
+  rdfs:label "Все пользователи входят в группу Основные пользователи ScheduledAction" ;
+.
+#--------------------- ScheduledAction template ---------------------
+
+v-s:AddScheduledAction
+  rdf:type v-s:Bundle ;
+  rdfs:label "Добавить"@ru ;
+  rdfs:label "Add"@en ;
+.
+
+v-s:TS_ScheduledAction
+  rdf:type v-ui:TemplateSpecification;
+  v-s:loadPriority "15"^^xsd:integer;
+  v-ui:defaultTemplate v-s:NewSingleScheduledActionTemplate;
+  v-ui:forClass v-s:ScheduledAction
+.
+
+v-s:ScheduledActionTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон для отображения Событий"@ru ;
+  rdfs:label "Template for ScheduledAction rendering"@en ;
+  v-ui:template """
+<div>
+  <h3 about="v-s:ScheduledAction" property="rdfs:label"></h3>
+  <div about="@" rel="v-s:hasScheduledAction" data-template="v-s:RecursiveScheduledActionTemplate"></div>
+  <div id="new-ScheduledAction"></div>
+  <button class="margin-sm btn btn-success" id="add-ScheduledAction" about="v-s:AddScheduledAction" property="rdfs:label"></button>
+</div>
+<script>
+  $("#add-ScheduledAction", template).click(function () {
+    var addScheduledAction = $(this).hide();
+    var _class = new veda.IndividualModel("v-s:ScheduledAction"),
+        ScheduledAction = new veda.IndividualModel(),
+        cntr = $("#new-ScheduledAction", template).empty(),
+        tmpl = "v-s:SingleScheduledActionTemplate";
+    ScheduledAction["rdf:type"] = [_class];
+    ScheduledAction["v-s:backwardTarget"] = [individual];
+    ScheduledAction["v-s:backwardProperty"] = [new veda.IndividualModel("v-s:hasScheduledAction")];
+    ScheduledAction["v-s:canRead"] = [ true ];
+    ScheduledAction["v-s:scriptHandlered"] = [ false ];
+    ScheduledAction.present(cntr, tmpl, "edit");
+    ScheduledAction.one("afterSave beforeReset", function () {
+      addScheduledAction.show();
+      cntr.empty();
+    });
+  });
+
+  template.on("click", "#reply.action", function (e) {
+    e.preventDefault();
+    var ScheduledActionTemplate = $(this).closest("[resource]"),
+        targetScheduledAction = new veda.IndividualModel( ScheduledActionTemplate.attr("resource") ),
+        cntr = $("#new-reply", ScheduledActionTemplate).first().empty(),
+        _class = new veda.IndividualModel("v-s:ScheduledAction"),
+        tmpl = new veda.IndividualModel("v-s:SingleScheduledActionTemplate"),
+        reply = new veda.IndividualModel();
+    reply["rdf:type"] = [_class];
+    reply["v-s:backwardTarget"] = [targetScheduledAction];
+    reply["v-s:backwardProperty"] = [new veda.IndividualModel("v-s:hasScheduledAction")];
+    reply["v-s:canRead"] = [ true ];
+    reply.present(cntr, tmpl, "edit");
+    reply.one("afterSave beforeReset", function () {
+      cntr.empty();
+    });
+  });
+
+  template.on("click", "#edit-ScheduledAction.action", function (e) {
+    e.preventDefault();
+    var tmpl = new veda.IndividualModel("v-s:SingleScheduledActionTemplate"),
+        ScheduledActionTemplate = $(this).closest("[resource]"),
+        ScheduledAction = new veda.IndividualModel( ScheduledActionTemplate.attr("resource") ),
+        cntr = $("#new-reply", ScheduledActionTemplate).first().empty(),
+        ScheduledActionСontent = $("#ScheduledAction-content", ScheduledActionTemplate).hide();
+    ScheduledAction.present(cntr, tmpl, "edit");
+    ScheduledAction.one("afterSave beforeReset", function () {
+      ScheduledActionСontent.show();
+      cntr.empty();
+    });
+  });
+
+  //# sourceURL=v-s:ScheduledActionTemplate
+</script>
+    """;
+.
+
+v-s:SingleScheduledActionTemplate
+  rdf:type v-ui:ClassTemplate ;
+  v-ui:forClass v-s:ScheduledAction ;
+  rdfs:label "Шаблон для класса v-s:ScheduledAction"@ru ;
+  rdfs:label "Template for v-s:ScheduledAction class"@en ;
+  v-ui:template """
+<script>
+  $(".action", template).click(function (e) {
+    e.preventDefault();
+    template.trigger(this.id);
+  });
+</script>
+<div class="panel panel-default" style="margin-top: 20px">
+  <div class="panel-body">
+    <em about="v-s:description" property="rdfs:label"></em>
+    <div property="v-s:description" class="view -edit -search"></div>
+    <veda-control data-type="text" rows="1" property="v-s:description" class="-view edit -search"></veda-control>
+    <div class="row">
+      <div class="col-md-5">
+        <em about="v-s:responsible" property="rdfs:label"></em>
+        <div rel="v-s:responsible" data-template="v-ui:LabelTemplate" class="view -edit -search"></div>
+        <veda-control data-type="link" rel="v-s:responsible" class="-view edit -search fulltext"></veda-control>
+
+        <em about="v-s:controller" property="rdfs:label"></em>
+        <div rel="v-s:controller" data-template="v-ui:LabelTemplate" class="view -edit -search"></div>
+        <veda-control data-type="link" rel="v-s:controller" class="-view edit -search fulltext"></veda-control>
+      </div>
+      <div class="col-md-7">
+        <div class="col-md-7">
+          <em about="v-s:TaskPeriodBundle" property="rdfs:label"></em>
+          <div rel="v-s:hasPeriod" class="view edit -search" data-template="v-ui:LabelTemplate"></div>
+          <veda-control data-type="link" rel="v-s:hasPeriod" class="-view edit search fulltext dropdown"></veda-control>
+        </div>
+        <div class="col-md-5">
+          <em about="v-s:TaskDateBundle" property="rdfs:label"></em>
+          <div property="v-s:dateToPlan" class="view -edit -search"></div>
+          <veda-control data-type="dateTime" property="v-s:dateToPlan" class="-view edit -search"></veda-control>
+        </div>
+        <div class="col-md-7">
+          <em about="v-s:TaskGiveAwatDateBundle" property="rdfs:label"></em>
+          <div property="v-s:dateToFact" class="view edit -search"></div>
+        </div>
+        <div class="col-md-5">
+          <em about="v-s:hasStatus" property="rdfs:label"></em>
+          <div rel="v-s:hasStatus" data-template="v-ui:LabelTemplate" class="view edit -search"></div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <span about="@" data-template="v-ui:StandardButtonsTemplate" data-embedded="true" data-buttons="save edit cancel delete"></span>
+  </div>
+</div>
+  """ ;
+.
+v-s:NewSingleScheduledActionTemplate
+  rdf:type v-ui:ClassTemplate ;
+  v-ui:forClass v-s:ScheduledAction ;
+  rdfs:label "Шаблон для класса v-s:ScheduledAction"@ru ;
+  rdfs:label "Template for v-s:ScheduledAction class"@en ;
+  v-ui:template """
+<script>
+  $(".action", template).click(function (e) {
+    e.preventDefault();
+    template.trigger(this.id);
+  });
+</script>
+<div>
+  <div class="container sheet">
+    <h3 class="margin-sm">
+      <span about="@" rel="rdf:type" data-template="v-ui:LabelTemplate"></span><br>
+      <small about="@" property="rdfs:label" class="view edit -search"></small>
+    </h3>
+    <section id="MainProperties">
+      <h4 class="section-header" about="v-s:MainProperties" property="rdfs:label"></h4>
+      <div class="row row-attribute">
+        <div class="col-sm-3 col-xs-5">
+          <label about="v-s:BacwardTargetBundle" property="rdfs:label"></label>
+        </div>
+        <div class="col-sm-9 col-xs-7">
+            <div about="@" rel="v-s:backwardTarget">
+            <div about="@" data-template="v-ui:ClassNameLabelLinkTemplate"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row row-attribute">
+        <div class="col-sm-3 col-xs-5">
+          <label about="v-s:description" property="rdfs:label"></label>
+        </div>
+        <div class="col-sm-9 col-xs-7">
+          <div property="v-s:description" class="view -edit -search"></div>
+          <veda-control data-type="text" rows="1" property="v-s:description" class="-view edit -search"></veda-control>
+        </div>
+      </div>
+      <div class="row row-attribute">
+        <div class="col-sm-3 col-xs-5">
+          <label about="v-s:responsible" property="rdfs:label"></label>
+        </div>
+        <div class="col-sm-9 col-xs-7">
+          <div rel="v-s:responsible" data-template="v-ui:LabelTemplate" class="view -edit -search"></div>
+          <veda-control data-type="link" rel="v-s:responsible" class="-view edit -search fulltext"></veda-control>
+        </div>
+      </div>
+      <div class="row row-attribute">
+        <div class="col-sm-3 col-xs-5">
+          <label about="v-s:TaskPeriodBundle" property="rdfs:label"></label>
+        </div>
+        <div class="col-sm-9 col-xs-7">
+          <div rel="v-s:hasPeriod" class="view edit -search" data-template="v-ui:LabelTemplate"></div>
+          <veda-control data-type="link" rel="v-s:hasPeriod" class="-view edit search fulltext dropdown"></veda-control>
+        </div>
+      </div>
+      <div class="row row-attribute">
+        <div class="col-sm-3 col-xs-5">
+          <label about="v-s:TaskDateBundle" property="rdfs:label"></label>
+        </div>
+        <div class="col-sm-9 col-xs-7">
+          <div property="v-s:dateToPlan" class="view -edit -search"></div>
+          <veda-control data-type="dateTime" property="v-s:dateToPlan" class="-view edit -search"></veda-control>
+        </div>
+      </div>
+      <div class="row row-attribute">
+        <div class="col-sm-3 col-xs-5">
+          <label about="v-s:TaskGiveAwatDateBundle" property="rdfs:label"></label>
+        </div>
+        <div class="col-sm-9 col-xs-7">
+          <div property="v-s:dateToFact" class="view edit -search"></div>
+        </div>
+      </div>
+      <div class="row row-attribute">
+        <div class="col-sm-3 col-xs-5">
+          <label about="v-s:hasStatus" property="rdfs:label"></label>
+        </div>
+        <div class="col-sm-9 col-xs-7">
+          <div rel="v-s:hasStatus" data-template="v-ui:LabelTemplate" class="view edit -search"></div>
+        </div>
+      </div>
+    </section>
+    <span about="@" data-template="v-ui:StandardButtonsTemplate" data-embedded="true" data-buttons="save edit cancel delete"></span>
+  </div>
+</div>
+  """ ;
+.
+
+v-s:RecursiveScheduledActionTemplate
+  rdf:type v-ui:ClassTemplate ;
+  rdfs:label "Шаблон для класса v-s:ScheduledAction"@ru ;
+  rdfs:label "Template for v-s:ScheduledAction class"@en ;
+  v-ui:template """
+<script>
+  individual.rights.then(function (rights) {
+    var actions = $("#edit-ScheduledAction, #delete", template);
+    if ( !rights.hasValue("v-s:canUpdate", true) ) {
+      actions.remove();
+    } else {
+      individual.on("v-s:hasScheduledAction", ScheduledActionHandler);
+      template.one("remove", function () {
+        individual.off("v-s:hasComment", ScheduledActionHandler);
+      });
+      ScheduledActionHandler(individual["v-s:hasScheduledAction"]);
+    }
+    function ScheduledActionHandler (values) {
+      values.length ? actions.hide() : actions.show();
+    }
+  });
+
+  $(".action", template).click(function (e) {
+    e.preventDefault();
+    var that = this;
+    if ( that.id === "delete" ) {
+      var warning = new veda.IndividualModel("v-s:AreYouSure");
+      warning.load().then(function (warning) {
+        warning = warning["rdfs:label"].map(veda.Util.formatValue).join(" ");
+        if ( confirm(warning) ) {
+          template.trigger(that.id);
+        }
+      });
+    } else {
+      template.trigger(that.id);
+    }
+  });
+
+  //# sourceURL=v-s:RecursiveScheduledActionTemplate
+</script>
+<div class="media" style="overflow:initial;">
+  <div class="media-body" style="overflow:initial;">
+    <div rel="v-s:backwardTarget" data-template="v-ui:ClassNameLabelLinkTemplate" class="view -edit -search"></div>
+    <div id="ScheduledAction-content">
+      <em about="v-s:description" property="rdfs:label"></em>
+      <div property="v-s:description" class="view -edit -search"></div>
+      <veda-control data-type="text" rows="1" property="v-s:description" class="-view edit -search"></veda-control>
+      <div class="row">
+        <div class="col-md-6">
+          <em about="v-s:responsible" property="rdfs:label"></em>
+          <div rel="v-s:responsible" data-template="v-ui:LabelTemplate"></div>
+          <veda-control data-type="link" rel="v-s:responsible" class="-view edit -search fulltext"></veda-control>
+        </div>
+        <div class="col-md-6">
+          <em about="v-s:controller" property="rdfs:label"></em>
+          <div rel="v-s:controller" data-template="v-ui:LabelTemplate"></div>
+          <veda-control data-type="link" rel="v-s:controller" class="-view edit -search fulltext"></veda-control>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <em about="v-s:TaskDateBundle" property="rdfs:label"></em>
+          <div property="v-s:dateToPlan" class="view -edit -search"></div>
+          <veda-control data-type="dateTime" property="v-s:dateToPlan" class="-view edit -search"></veda-control>
+        </div>
+        <div class="col-md-3">
+          <em about="v-s:TaskPeriodBundle" property="rdfs:label"></em>
+          <div rel="v-s:hasPeriod" data-template="v-ui:LabelTemplate"></div>
+          <veda-control data-type="link" rel="v-s:hasPeriod" class="-view edit -search fulltext"></veda-control>
+        </div>
+        <div class="col-md-3">
+          <em about="v-s:TaskGiveAwatDateBundle" property="rdfs:label"></em>
+          <div property="v-s:dateToFact" class="view edit -search"></div>
+        </div>
+        <div class="col-md-3">
+          <em about="v-s:hasStatus" property="rdfs:label"></em>
+          <div rel="v-s:hasStatus" class="view edit -search" data-template="v-ui:LabelTemplate"></div>
+        </div>
+      </div>
+
+      <small>
+        <a href="#" id="edit-ScheduledAction" class="action" about="v-s:Edit" property="rdfs:label"></a>
+        &nbsp;
+        <a href="#" id="delete" class="action" about="v-s:Delete" property="rdfs:label"></a>
+        &nbsp;
+        <a href="#" id="journal" class="action" about="v-s:Journal" property="rdfs:label"></a>
+      </small>
+    </div>
+    <div id="new-reply"></div>
+    <hr class="margin-sm">
+    <div about="@" rel="v-s:hasScheduledAction" data-template="v-s:RecursiveCommentTemplate"></div>
+  </div>
+</div>
+<script>
+  $("#journal", template).on("click", function (e) {
+    e.preventDefault();
+    var journal_uri = individual.id + "j",
+        journal = new veda.IndividualModel(journal_uri);
+    journal.load().then(function (journal) {
+      if ( !journal.hasValue("rdf:type", "rdfs:Resource") ) {
+        riot.route("#/" + journal_uri);
+      } else {
+        var journalEmpty = new veda.IndividualModel("v-s:JournalEmpty");
+        journalEmpty.load().then(function (journalEmpty) {
+          journalEmpty = journalEmpty.toString();
+          alert(journalEmpty);
+        });
+      }
+    });
+  });
+</script>
+  """ ;
+.
+
+# ------------  / ScheduledAction template ---------------
+
+# ------------  ScheduledAction events ---------------
+
+cfg:ScheduledAction_CreateInstruction_Daily
+  rdf:type v-s:Event ;
+  v-s:author cfg:VedaSystemAppointment ;
+  rdfs:label "Создание поручения для запланированных событий" ;
+  v-s:triggerByUid cfg:daily ;
+  v-s:runAt "V8.LowPriority";
+  v-s:script """
+print("[cfg:ScheduledAction_CreateInstruction_Daily] ************************** START **************************");
+
+var scriptInfo = get_individual(ticket, 'v-s:ScheduledAction_CreateInstruction_Daily_Info');
+if (!scriptInfo) {
+  var yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  scriptInfo = {
+    '@': 'v-s:ScheduledAction_CreateInstruction_Daily_Info',
+    'rdf:type': veda.Util.newUri('v-s:CronScriptsInfo'),
+    'v-s:lastDateOfExecuting':  veda.Util.newDate(yesterday)
+  };
+}
+//print('scritInfo=', veda.Util.toJson(scriptInfo));
+var lastDate = scriptInfo['v-s:lastDateOfExecuting'][0].data;
+var today = new Date();
+today.setHours(23,59,59,0);
+var queryString = "( 'rdf:type'==='v-s:ScheduledAction' && 'v-s:scriptHandlered'=='false' )";
+var result = query(ticket, queryString).result;
+for (var i=0; i<result.length; i++){
+  var individ = new veda.IndividualModel(result[i], false);
+  // не нужно в случае множественного значения периода
+  // if (veda.Util.hasValue(individ, 'v-s:dateToFact')) {
+  //   print('Skip, because was processed: ',result[i]);
+  //   continue;
+  // };
+  if (!individ.hasValue('v-s:backwardTarget')){
+    print('Skip, because not found backwardTarget: ',result[i]);
+    continue;
+  }
+  if (!individ.hasValue('v-s:dateToPlan')){
+    print('Skip, because not found dateToPlan: ',result[i]);
+    continue;
+  }
+  //print('dateToPlan=', individ['v-s:dateToPlan']);
+  var deadline = individ['v-s:dateToPlan'][0];
+  var isAll = true;
+  var set_in_document = {
+    '@': result[i]
+  };
+  for (var j = 0; j < individ['v-s:hasPeriod'].length; j++){
+    var period = individ['v-s:hasPeriod'][j];
+    var delta;
+    if (period.id == 'd:z8r34mi5y8rl8m4kbo3q69uw5d') {
+      delta = 86400000;
+    } else if (period.id == 'd:a21t5y3pswuewm8ohjexiqtxscr') {
+      delta = 86400000*7;
+    } else if (period.id == 'd:fb27kxa3r98ilnkvmy99xc11p1') {
+      delta = 86400000*14;
+    } else if (period.id == 'd:pqauzdiqyls7pzrawelnh2zwj3') {
+      delta = 86400000*30;
+    } else if (period.id == 'd:d2cloqhm8yqaq8t68zi9iepc69') {
+      delta = 86400000*61;
+    } else if (period.id == 'd:a28m44dm9yw04j7hf69r4i40sn5') {
+      delta = 86400000*121;
+    } else if (period.id == 'd:p699yrkgnd7bamjaqwx305o5hi') {
+      delta = 86400000*365;
+    } else if (period.id == 'd:jsc4p8dq5u4fm1sumekuifkw7r') {
+      delta = 86400000/24;
+    } else {
+      print("Skip, because period is unbehavior",result[i]);
+      continue;
+    }
+
+    var targetDate = +deadline-delta;
+    //print('targetDate ', targetDate);
+    //print('targetDate-lastDate ', targetDate-lastDate);
+    //print('today - targetDate ', today - targetDate);
+    if ( (targetDate-lastDate)< 0 ) {
+      print("Skip, because too last: ", result[i]);
+      continue;
+    } else if ( (today - targetDate) < 0 ) {
+      isAll = false;
+      print("Skip, because too early: ", result[i]);
+      continue;
+    }
+    isAll = false;
+    var uri = veda.Util.genUri() + "-tr";
+    print(veda.Util.toJson(individ['v-s:description']));
+    var comment = individ['v-s:description'][0];
+    var startForm = {
+      "@" : uri,
+      "rdf:type" : veda.Util.newUri("v-df:InstructionRouteStartForm"),
+      "v-wf:StartForm_canEdit" : veda.Util.newBool(false),
+      "v-wf:StartForm_setStatus" : veda.Util.newBool(true),
+      "v-wf:forNet" : veda.Util.newUri("s-wf:WrapUniversalNet"),
+      "v-wf:processedDocument" : veda.Util.newUri(result[i]),
+      "v-wf:useTransformation" : veda.Util.newUri("v-df:InstructionRouteStartFormToNet"),
+      "v-s:responsible" : veda.Util.newUri(individ['v-s:responsible'][0].id),
+      "v-wf:hasStatusWorkflow" : veda.Util.newUri("v-wf:ToBeSent"),
+      "v-wf:fromShedulerScript" : veda.Util.newBool(true),
+      "v-s:creator" : veda.Util.newUri ('cfg:VedaSystemAppointment'),
+      "v-s:dateTo" : veda.Util.newDate(individ['v-s:dateToPlan'][0])
+    };
+    if (individ.hasValue('v-s:description')){
+      startForm['rdfs:comment'] = veda.Util.newStr(individ['v-s:description'][0]);
+    }
+    if (individ.hasValue('v-s:controller')) {
+      startForm['v-s:controller'] = veda.Util.newUri(individ['v-s:controller'][0].id);
+    }
+    put_individual(ticket, startForm, _event_id);
+    set_in_document['v-s:dateToFact'] = veda.Util.newDate(new Date());
+    print("Created: ", uri, ". For document:", result[i]);
+  }
+  if (isAll) {
+    set_in_document['v-s:scriptHandlered'] = veda.Util.newBool('true');
+  }
+  set_in_individual(ticket, set_in_document, _event_id);
+}
+scriptInfo['v-s:lastDateOfExecuting'] = veda.Util.newDate(new Date());
+put_individual(ticket, scriptInfo, _event_id);
+print("[cfg:ScheduledAction_CreateInstruction_Daily] *************************** END ***************************");
+""" ;
+.
+
+# ------------  / ScheduledAction events ---------------

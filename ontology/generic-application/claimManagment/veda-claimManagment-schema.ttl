@@ -1,0 +1,243 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix v-s: <http://semantic-machines.com/veda/veda-schema/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix v-ui: <http://semantic-machines.com/veda/veda-ui/> .
+
+
+<http://semantic-machines.com/veda/veda-claimManagment-schema/>
+  rdf:type owl:Ontology ;
+  rdfs:label "Онтология системы Veda. Управление претензиями. Схема."@ru ;
+  rdfs:label "Veda system ontology. ClaimManagment. Schema."@en ;
+  v-s:loadPriority 11 ;
+.
+
+# ------------------------------------------------------------ КЛАССЫ --
+
+#----------------------------------------------------------- Претензионное событие --
+v-s:ClaimEvent
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:Claim ;
+  rdfs:subClassOf v-s:Enumerated ;
+  rdfs:subClassOf v-s:Labeled ;
+  v-s:labelPattern "{@.v-s:registrationNumber} - {@.v-s:theme} - {@.v-s:date}" ;
+  rdfs:label "Претензионное событие"@ru ;
+  rdfs:label "Claim event"@en ;
+  v-s:hasNumeration v-s:RegistrationNumberYearNumeration2_6 ;
+.
+
+#-----Регистрационный номер
+#v-s:registrationNumber
+
+#-----Статус
+#v-s:hasStatus
+v-s:PS_hasStatus_ClaimEvent
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:ClaimEvent ;
+  v-ui:forProperty v-s:hasStatus ;
+  v-ui:minCardinality 0 ;
+  v-ui:maxCardinality 1 ;
+  v-ui:queryPrefix "('@' == 'v-s:StatusPreparationRegistrationForm' || '@' == 'v-s:StatusPreparationTechnicalOpinion' || '@' == 'v-s:StatusPreparationLegalOpinion' || '@' == 'v-s:StatusFulfillmentConditions'|| '@' == 'v-s:StatusReview'|| '@' == 'v-s:StatusPaymentPending' || '@' == 'v-s:StatusMoreInformationPending'|| '@' == 'v-s:StatusPaid' || '@' == 'v-s:StatusInvestigationCompleted' || '@' == 'v-s:StatusRegistration' || '@' == 'v-s:StatusClosing')"^^xsd:string ;
+  v-ui:defaultValue v-s:StatusAgreement ;
+  rdfs:label "Спецификация свойства hasStatus для класса v-s:ClaimEvent"@ru ;
+  rdfs:label "Property hasStatus specification for v-s:ClaimEvent class"@en ;
+.
+
+#-----Дата
+#v-s:dateFrom
+v-s:PS_date_ClaimEvent
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:ClaimEvent ;
+  v-ui:forProperty v-s:dateFrom ;
+  v-ui:minCardinality 1 ;
+  v-ui:maxCardinality 1 ;
+  rdfs:label "Спецификация свойства v-s:dateFrom для класса v-s:ClaimEvent"@ru ;
+  rdfs:label "Property v-s:dateFrom specification for v-s:ClaimEvent class"@en ;
+.
+#v-s:dateTo
+
+#-----Тема
+#v-s:theme
+v-s:PS_theme_ClaimEvent
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:ClaimEvent ;
+  v-ui:forProperty v-s:theme ;
+  v-ui:minCardinality 1 ;
+  v-ui:maxCardinality 1 ;
+  rdfs:label "Спецификация свойства theme для класса v-s:ClaimEvent"@ru ;
+  rdfs:label "Property theme specification for v-s:ClaimEvent class"@en ;
+.
+
+#-----Инициатор
+#v-s:initiator
+
+#-----Подразделения , причастные к событию
+#v-s:responsibleDepartment
+
+#-----Описание обстоятельства претензии
+#v-s:claimCircumstanceDescription
+v-s:PS_claimCircumstanceDescription_ClaimEvent
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:ClaimEvent ;
+  v-ui:forProperty v-s:claimCircumstanceDescription ;
+  v-ui:minCardinality 1 ;
+  v-ui:maxCardinality 1 ;
+  rdfs:label "Спецификация свойства claimCircumstanceDescription для класса v-s:ClaimEvent"@ru ;
+  rdfs:label "Property claimCircumstanceDescription specification for v-s:ClaimEvent class"@en ;
+.
+
+#-----Другие организации, причастные к претензии
+#v-s:stakeholder
+  v-s:PS_stakeholder_ClaimEvent
+    rdf:type v-ui:PropertySpecification ;
+    v-ui:forClass v-s:ClaimEvent ;
+    v-ui:minCardinality 1 ;
+    v-ui:maxCardinality 10 ;
+    v-ui:forProperty v-s:stakeholder ;
+    v-ui:queryPrefix "('rdf:type'==='v-s:Organization')" ;
+    rdfs:label "Спецификация свойства v-s:stakeholder для класса v-s:ClaimEvent"@ru ;
+    rdfs:label "v-s:stakeholder property specification for v-s:ClaimEvent class"@en ;
+  .
+
+#-----Номер контракта
+#v-s:content
+
+#-------------------------------Претензия
+v-s:Claim
+  rdf:type owl:Class ;
+  rdfs:subClassOf v-s:UserThing ;
+  rdfs:subClassOf v-s:Registered ;
+  rdfs:subClassOf v-s:Deliverable2 ;
+  rdfs:subClassOf v-s:Controlled ;
+  rdfs:subClassOf v-s:Contractual ;
+  rdfs:subClassOf v-s:Measurable ;
+  rdfs:subClassOf v-s:Journaling ;
+  rdfs:subClassOf v-s:Document ;
+  rdfs:label "Претензия"@ru ;
+  rdfs:label "Claim"@en ;
+.
+v-s:claimDescription
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Описание обстоятельств претензии"@ru ;
+  rdfs:label "Claim description"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:claimObjectDescription
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Описание объекта претензии"@ru ;
+  rdfs:label "Claim description"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:claimObject
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Объект претензии"@ru ;
+  rdfs:label "Claim object"@en ;
+  rdfs:range v-s:MaterialGroup ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:hasClaimObject
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Объект претензии"@ru ;
+  rdfs:label "Claim object"@en ;
+  rdfs:range v-s:MaterialGroup ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:claimRequirement
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Требование претензии"@ru ;
+  rdfs:label "Claim requirement"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:claimCircumstanceDescription
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Описание обстоятельств претензии"@ru ;
+  rdfs:label "Claim circumstance description"@en ;
+  rdfs:range xsd:string ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:claimVolume
+  rdf:type owl:DatatypeProperty ;
+  rdfs:label "Объем претензии"@ru ;
+  rdfs:label "Claim volume"@en ;
+  rdfs:range xsd:decimal ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:requirementSum
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Требуемая сумма"@ru ;
+  rdfs:label "Requirement sum"@en ;
+  rdfs:range v-s:Price ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:compensationSum
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Возмещенная сумма"@ru ;
+  rdfs:label "Compaensation sum"@en ;
+  rdfs:range v-s:Price ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:hasClaimCircumstance
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Обстоятельства претензии"@ru ;
+  rdfs:label "Claim circumstancem"@en ;
+  rdfs:range v-s:ClaimCircumstance ;
+  rdfs:domain v-s:Claim ;
+.
+v-s:hasClaimEvent
+  rdf:type owl:ObjectProperty ;
+  rdfs:label "Претензионное событие"@ru ;
+  rdfs:label "Claim event"@en ;
+  rdfs:range v-s:ClaimEvent ;
+  rdfs:domain v-s:Claim ;
+.
+
+#v-s:hasStatus
+v-s:PS_hasStatus_Claim
+  rdf:type v-ui:ObjectPropertySpecification ;
+  v-ui:forClass v-s:Claim ;
+  v-ui:forProperty v-s:hasStatus ;
+  v-ui:maxCardinality 1 ;
+  v-ui:minCardinality 1 ;
+  v-ui:queryPrefix "('@' == 'v-s:StatusPreparationRegistrationForm' || '@' == 'v-s:StatusPreparationTechnicalOpinion' || '@' == 'v-s:StatusPreparationLegalOpinion' || '@' == 'v-s:StatusFulfillmentConditions'|| '@' == 'v-s:StatusReview'|| '@' == 'v-s:StatusPaymentPending' || '@' == 'v-s:StatusMoreInformationPending'|| '@' == 'v-s:StatusPaid' || '@' == 'v-s:StatusInvestigationCompleted' || '@' == 'v-s:StatusRegistration' || '@' == 'v-s:StatusClosing')"^^xsd:string ;
+  rdfs:label "Спецификация v-s:hasStatus для класса v-s:Claim "@ru ;
+  rdfs:label "v-s:hasStatus property specification for v-s:Claim class"@en ;
+.
+
+#v-s:hasDecision
+v-s:PS_hasDecision_Claim
+  rdf:type v-ui:ObjectPropertySpecification ;
+  v-ui:forClass v-s:Claim ;
+  v-ui:forProperty v-s:hasDecision ;
+  v-ui:maxCardinality 1 ;
+  v-ui:minCardinality 0 ;
+  v-ui:queryPrefix "('@' == 'v-s:StatusAcceptedPartially' || '@' == 'v-s:StatusRejected' || '@' == 'v-s:StatusAccepted')"^^xsd:string ;
+  rdfs:label "Спецификация v-s:hasDecision для класса v-s:Claim "@ru ;
+  rdfs:label "v-s:hasDecision property specification for v-s:Claim class"@en ;
+.
+#v-s:sender
+v-s:PS_sender_Claim
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:Claim ;
+  v-ui:forProperty v-s:sender ;
+  v-ui:minCardinality 1 ;
+  v-ui:maxCardinality 100 ;
+  rdfs:label "Спецификация свойства v-s:sender для класса v-s:Claim"@ru ;
+  rdfs:label "v-s:sender property specification for v-s:Claim class"@en ;
+  v-ui:rangeRestriction v-s:Correspondent ;
+.
+
+#v-s:recipient
+v-s:PS_recipient_Claim
+  rdf:type v-ui:PropertySpecification ;
+  v-ui:forClass v-s:Claim ;
+  v-ui:forProperty v-s:recipient ;
+  v-ui:minCardinality 1 ;
+  v-ui:maxCardinality 100 ;
+  rdfs:label "Спецификация свойства v-s:recipient для класса v-s:Claim"@ru ;
+  rdfs:label "v-s:recipient property specification for v-s:Claim class"@en ;
+  v-ui:rangeRestriction v-s:Correspondent ;
+.
