@@ -24,6 +24,7 @@ jobs:
            npm install grunt-contrib-qunit
            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
            sudo dpkg -i --force-depends google-chrome-stable_current_amd64.deb
+           sudo apt-get install -y xvfb           
            stty cols 80
            export DISPLAY=:99.0
            fluxbox >/dev/null 2>&1 &
