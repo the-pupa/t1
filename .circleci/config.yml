@@ -32,8 +32,8 @@ commands:
 jobs:
   build:
     machine:
-      image: ubuntu-1604:202004-01
-    steps:
+      docker:
+        - image: circleci/rust:latest    steps:
       - checkout
       - run:
           name: "pre-install"
