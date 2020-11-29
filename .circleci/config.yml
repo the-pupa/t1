@@ -11,7 +11,6 @@ commands:
             echo 'export "RUSTC_WRAPPER"="sccache"' >> $BASH_ENV
             # This is the maximum space sccache cache will use on disk.
             echo 'export "SCCACHE_CACHE_SIZE"="1G"' >> $BASH_ENV
-            cat /etc/ssl/certs/ca-certificates.crt
             echo 'export "ENV SSL_CERT_FILE"="/etc/ssl/certs/ca-certificates.crt"' >> $BASH_ENV
             sccache --version
   restore-sccache-cache:
@@ -56,8 +55,6 @@ jobs:
       - run:
           name: "Install"
           command: | 
-           sudo apt-get install libssh2-1 libssh2-1-dev
-           sudo apt install rustc
            ./tools/install-tarantool.sh
            ./control-install.sh
            go version
@@ -67,6 +64,7 @@ jobs:
       - run:
           name: "Build"
           command: | 
+           echo 'export "PATH"="$HOME/.cargo/bin:$PATH"' >> $HOME/.profile
            source $HOME/.cargo/env
            ./build.sh 
       - save-sccache-cache
