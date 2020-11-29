@@ -35,8 +35,6 @@ jobs:
       image: ubuntu-1604:202004-01
     steps:
       - checkout
-      - setup-sccache
-      - restore-sccache-cache
       - run:
           name: "pre-install"
           command: | 
@@ -61,6 +59,8 @@ jobs:
            source $HOME/.cargo/env
            go version
            rustc -V
+      - setup-sccache
+      - restore-sccache-cache
       - run:
           name: "Build"
           command: | 
