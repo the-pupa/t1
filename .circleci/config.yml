@@ -58,13 +58,13 @@ jobs:
            ./control-install.sh
            go version
            rustc -V
-      - setup-sccache
-      - restore-sccache-cache
+      #- setup-sccache
+      #- restore-sccache-cache
       - run:
           name: "Build"
           command: | 
            ./build.sh 
-      - save-sccache-cache
+      #- save-sccache-cache
       - run:
           name: "test"
           command: | 
