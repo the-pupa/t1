@@ -49,7 +49,7 @@ sudo apt-get install build-essential
 
 if [ "$1" = force ] || ! rustc -V ; then
     echo "--- INSTALL RUST ---"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     rustup update nightly
 else
     echo "--- UPDATE RUST ---"
