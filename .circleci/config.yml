@@ -65,6 +65,7 @@ jobs:
       - run:
           name: "Build"
           command: | 
+          source $HOME/.cargo/env
            ./build.sh 
       - save-sccache-cache
       - run:
