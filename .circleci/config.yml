@@ -59,6 +59,7 @@ jobs:
            ./tools/install-tarantool.sh
            ./control-install.sh
            echo 'export "PATH"="$HOME/.cargo/bin:$PATH"' >> $HOME/.profile
+           cat $HOME/.profile
            source $HOME/.cargo/env
            go version
            rustc -V
