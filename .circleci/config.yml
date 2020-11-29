@@ -56,7 +56,7 @@ jobs:
           command: | 
            ./tools/install-tarantool.sh
            ./control-install.sh
-           export PATH=$PATH:$HOME/.cargo/bin
+           echo 'export PATH=$PATH:$HOME/.cargo/bin' >> $BASH_ENV
            go version
            rustc -V
       - setup-sccache
