@@ -6,7 +6,6 @@ commands:
       - run:
           name: Install sccache
           command: |
-            source $HOME/.cargo/env
             cargo install sccache
             # This configures Rust to use sccache.
             echo 'export "RUSTC_WRAPPER"="sccache"' >> $BASH_ENV
@@ -57,7 +56,7 @@ jobs:
           command: | 
            ./tools/install-tarantool.sh
            ./control-install.sh
-           source $HOME/.cargo/env
+           export PATH=$PATH:$HOME/.cargo/bin
            go version
            rustc -V
       - setup-sccache
@@ -65,7 +64,6 @@ jobs:
       - run:
           name: "Build"
           command: | 
-           source $HOME/.cargo/env
            ./build.sh 
       - save-sccache-cache
       - run:
