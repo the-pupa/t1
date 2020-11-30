@@ -13,6 +13,7 @@ commands:
           name: Install sccache
           command: |
             echo 'export PATH=$RUST_PATH:$PATH' >> $BASH_ENV
+            source $HOME/.cargo/env
             cargo install sccache
             # This configures Rust to use sccache.
             echo 'export "RUSTC_WRAPPER"="sccache"' >> $BASH_ENV
