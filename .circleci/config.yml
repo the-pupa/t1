@@ -59,7 +59,7 @@ jobs:
            source $HOME/.cargo/env
            go version
            rustc -V
-      #- setup-sccache
+      - setup-sccache
       #- restore-sccache-cache
       - run:
           name: "Build"
