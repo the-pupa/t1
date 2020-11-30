@@ -6,9 +6,9 @@ commands:
       - run:
           command: echo 'export RUST_PATH="$HOME/.cargo/bin"'
       - run:
-          command: $RUST_PATH
+          command: echo $RUST_PATH
       - run:
-          command: ${RUST_PATH}
+          command: echo ${RUST_PATH}
       - run:
           name: Install sccache
           command: |
